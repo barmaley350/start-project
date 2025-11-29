@@ -14,6 +14,8 @@ psycopg2-binary = "*"
 django-debug-toolbar = "*"
 ruff = "*"
 django-extensions = "*"
+factory-boy = "*"
+faker = "*"
 
 [requires]
 python_version = "3.12"
