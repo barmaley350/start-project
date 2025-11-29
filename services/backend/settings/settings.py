@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "django_extensions",
     "debug_toolbar",
+    "apps.sphinx_docs",
     "apps.testapp",
 ]
 
@@ -182,3 +183,5 @@ DEBUG_TOOLBAR_CONFIG = {
 SHELL_PLUS_IMPORTS = [
     "from apps.testapp.factories import *",  # Imports all factories from factories.py
 ]
+
+LOGIN_URL = "/admin/"
