@@ -19,6 +19,7 @@ services:
       - service.frontend
     volumes:
       - static_volume:/usr/share/nginx/html/static
+      # - ./services/backend/docs/_build/html:/usr/share/nginx/html/docs
     restart: unless-stopped
     networks:
       - internal-net
