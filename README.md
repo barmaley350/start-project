@@ -178,7 +178,7 @@ service.nginx:
 docker compose up --build
 ```
 
-Для создания createsuperuser django admin выполните комманду ниже где `<project_name>` название вашей коневой папки проекта
+Для создания superuser django admin выполните комманду ниже где `<project_name>` название вашей коневой папки проекта
 
 ```
 docker exec -it <project_name>-service.backend-1 pipenv run python3 manage.py createsuperuser
