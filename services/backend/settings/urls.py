@@ -25,6 +25,7 @@ from django.urls import include, path
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("docs/", include("apps.sphinx_docs.urls")),
+    path("api/", include("apps.testapp.urls")),
 ]
 
 if settings.DEBUG:
