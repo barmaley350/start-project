@@ -134,3 +134,4 @@ docker compose up
 | ------------- | ------------- |  ------------- |
 |![img_1](files/img/s2.png)  | ![img_1](files/img/s3.png)  | ![img_1](files/img/s5.png)  |
 |![img_1](files/img/s1.png)  | ![img_1](files/img/s4.png)  | ![img_1](files/img/s6.png)  |
+|![img_1](files/img/sphinx.png)  | ![img_1](files/img/admin.png)  | ![img_1](files/img/django_rest.png)  |
