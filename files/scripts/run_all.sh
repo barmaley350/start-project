@@ -3,7 +3,7 @@ echo "-------------------------------"
 echo "Hello and welcome"
 echo "-------------------------------"
 
-BASE_DIR=$(pwd)
+BASE_DIR="/home/home/my/RepoCode/empty_dummy_project/"
 PATH_TO_BACKEND="services/backend"
 PATH_TO_BACKEND_DOCS="services/backend/docs"
 
