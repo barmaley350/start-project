@@ -6,12 +6,13 @@
   - [Установленные и настроенные модули](#установленные-и-настроенные-модули)
     - [Backend/Django](#backend-django)
     - [Frontend/Nuxtjs](#frontend-nuxtjs)
+- [Что нужно для локальной работы](#что-нужно-для-локальной-работы)
 - [Установка](#установка)
 - [Настройка](#настройка)
-  - [Backend (обязательно)](#backend)
-  - [Docker (опционально)](#docker)
+  - [Backend (обязательно)](#настройки-backend)
+  - [Frontend (обязательно)](#настройки-frontend)
+  - [Docker (опционально)](#настройки-docker)
 - [Первый запуск](#запуск)
-- [Что нужно для локальной работы](#что-нужно-для-локальной-работы)
 - [Известные проблемы](#известные-проблемы)
 - [Roadmap](#roadmap)
 - [Если все прошло успешно](#если-все-прошло-успешно)
@@ -88,6 +89,15 @@ coverage = "*"
 ```
 `cd services/frontend && npm list` для получения дополнительной 
 
+# Что нужно для локальной работы
+
+1. Docker Decktop (Управление контейнерами)
+2. vscode (или свой вариант)
+3. Терминал для удобной работы (например, Terminator)
+4. python3 (Backend)
+5. pipenv (Backend)
+6. nodejs (Fontend)
+7. npm (Fontend)
 
 # Установка
 ```
@@ -95,7 +105,7 @@ git clone <repo_name> <project_name>
 ```
 
 # Настройка
-## Backend
+## Настройки Backend
 
 Выполните настройки backend 
 ```
@@ -122,7 +132,18 @@ POSTGRES_PORT=5432
 % cd services/backend/
 % pipenv run python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
 ```
-## Docker
+Установите `pipenv` и находясь в каталоге `services/backend` выполните команду
+```
+pipenv sync --dev
+```
+## Настройки Frontend
+Установите `nodejs` и `npm` и находясь в каталоге `services/frontend` выполните команду
+
+```
+npm install
+```
+
+## Настройки Docker
 По умолчанию `nginx` стартует на порту `1338`. Если данный порт у вас занят, то необходимо внести изменения в `docker-compose.yaml`. Внесите изменения в секцию `ports`. 
 
 ```
@@ -150,16 +171,6 @@ docker compose up --build
 ```
 docker compose up
 ```
-# Что нужно для локальной работы
-
-1. Docker Decktop (Управление контейнерами)
-2. vscode (или свой вариант)
-3. Терминал для удобной работы (например, Terminator)
-4. python3 (Backend)
-5. pipenv (Backend)
-6. nodejs (Fontend)
-7. npm (Fontend)
-
 
 # Известные проблемы
 ## `pre-commit`и собственный велосипед
