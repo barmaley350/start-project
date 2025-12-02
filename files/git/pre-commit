@@ -2,7 +2,9 @@
 # После обновления скрипата нужно его скопировать в git/hooks
 # cp files/git/pre-commit .git/hooks
 
-PATH_TO_BACKEND="services/backend"
+BASE_DIR="/home/home/my/RepoCode/empty_dummy_project/"
+PATH_TO_BACKEND=$BASE_DIR"services/backend"
+
 #$RUFF_CHECK_FIX="--fix"
 RUFF_CHECK_FIX=""
 RUFF_FORMAT_CHECK="--check"
