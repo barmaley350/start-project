@@ -21,7 +21,7 @@ factory-boy = "*"
 faker = "*"
 pytest = "*"
 pytest-django = "*"
-pytest-sugar = "*"
+coverage = "*"
 
 [requires]
 python_version = "3.12"

@@ -42,7 +42,7 @@ factory-boy = "*"
 faker = "*"
 pytest = "*"
 pytest-django = "*"
-pytest-sugar = "*"
+coverage = "*"
 ```
 `cd services/backend && pipenv graph` для получения дополнительной информации
 

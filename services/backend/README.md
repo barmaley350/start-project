@@ -1,3 +1,25 @@
+# Установленные модули
+```
+[packages]
+django = "*"
+djangorestframework = "*"
+gunicorn = "*"
+python-dotenv = "*"
+psycopg2-binary = "*"
+sphinx = "*"
+sphinx-rtd-theme = "*"
+sphinxcontrib-django = "*"
+
+[dev-packages]
+django-debug-toolbar = "*"
+ruff = "*"
+django-extensions = "*"
+factory-boy = "*"
+faker = "*"
+pytest = "*"
+pytest-django = "*"
+coverage = "*"
+```
 # Создание django admin superuser
 Для создания superuser django admin выполните комманду ниже где `<project_name>` название вашей коневой папки проекта
 
@@ -129,14 +151,17 @@ docker exec -it empty_dummy_project-service.backend-1 pipenv run python3 manage.
 
 Например, для `zsh` можно добавить `command alias` в конфиг `.zshrc`
 Имена контенеров имеют префикс названия вашей корневой папки проекта. Замените `<project_name>` на название вашей корневой папки проекта. Например, если вана коневая папка проекта называется `empty_dummy_project` то в `zshrc` нужно добавить следующие строки: 
-1. `docker-dummy-shell` - запуск пустого shell в контейнере
-2. `docker-dummy-shell-plus` - запуск shell_plus
-3. `docker-dummy-shell-pytest` - запуск pytest
+1. `dummy-docker-shell` - запуск пустого shell в контейнере
+2. `dummy-docker-shell-plus` - запуск shell_plus
+3. `dummy-docker-pytest` - запуск pytest
 
 ```
-alias docker-dummy-shell='docker exec -it empty_dummy_project-service.backend-1 /bin/bash'
-alias docker-dummy-shell-plus='docker exec -it empty_dummy_project-service.backend-1 pipenv run python3 manage.py shell_plus'
-alias docker-dummy-shell-pytest='docker exec -it empty_dummy_project-service.backend-1 pipenv run pytest'
+alias dummy-docker-up='cd /home/home/my/RepoCode/empty_dummy_project/ && docker compose up'
+alias dummy-docker-up-build='cd /home/home/my/RepoCode/empty_dummy_project/ && docker compose up --build'
+alias dummy-docker-shell='docker exec -it empty_dummy_project-service.backend-1 /bin/bash'
+alias dummy-docker-shell-plus='docker exec -it empty_dummy_project-service.backend-1 pipenv run python3 manage.py shell_plus'
+alias dummy-docker-pytest='docker exec -it empty_dummy_project-service.backend-1 pipenv run pytest'
+alias dummy-backend-run-all='/bin/sh /home/home/my/RepoCode/empty_dummy_project/files/scripts/run_all.sh'
 ```
 Вы также можете настроить терминал как вам удобно. Например, ubuntu terminal 
 
