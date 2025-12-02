@@ -16,6 +16,12 @@ class Project(models.Model):
     description = models.TextField()
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    class Meta:
+        """Docstring for Meta."""
+
+        verbose_name = "Проект"
+        verbose_name_plural = "Проекты"
+
     def __str__(self) -> str:
         """Docstring for __str__.
 

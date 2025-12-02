@@ -14,3 +14,4 @@ class TestappConfig(AppConfig):
 
     default_auto_field = "django.db.models.BigAutoField"
     name = "apps.testapp"
+    verbose_name = "Приложение testapp"
