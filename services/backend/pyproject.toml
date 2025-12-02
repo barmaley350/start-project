@@ -11,7 +11,8 @@ dependencies = [
 dev = []
 
 [tool.pytest]
-addopts = ["-vv", "-x", "--lf"]
+#addopts = ["-vv", "-x", "--lf"]
+addopts = ["-v", "-x", "--lf"]
 testpaths = [
     "tests",
 ]
@@ -35,7 +36,7 @@ extend-exclude = [
 
 [tool.ruff.lint]
 select = ["ALL"]
-ignore = []
+ignore = ["S101"]
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
 [tool.ruff.format]
