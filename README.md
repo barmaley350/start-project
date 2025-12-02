@@ -106,10 +106,12 @@ docker compose up
 # Для локальной работы вам понадобятся:
 
 1. Docker Decktop (Управление контейнерами)
-2. python3 (Backend/django)
-3. pipenv (Backend/django)
-4. nodejs (Fontend/nuxtjs)
-5. npm (Fontend/nuxtjs)
+2. vscode (или свой вариант)
+3. Терминал для удобной работы (Terminator)
+4. python3 (Backend)
+5. pipenv (Backend)
+6. nodejs (Fontend)
+7. npm (Fontend)
 
 
 # Известные проблемы
