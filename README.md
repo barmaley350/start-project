@@ -111,7 +111,7 @@ git clone https://github.com/barmaley350/empty-dummy-project.git .
 ```
 
 # Настройка
-## Настрока с использованием init.sh
+## Настройка с использованием init.sh
 Вы можете запусть `init.sh` скрипт который поможет в начальной настройке. 
 ```
 chmod +x init.sh
