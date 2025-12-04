@@ -22,7 +22,8 @@ print_header() {
     echo -e "${YELLOW}Шаг 2${NC} - настройка backend (pipenv sync --dev)"       
     echo -e "${YELLOW}Шаг 3${NC} - настройка frontend (npm install)"
     echo -e "${YELLOW}Шаг 4${NC} - настройка переменных окружения для backend/frontend"
-    echo -e "${YELLOW}Шаг 5${NC} - настройка docker (docker compose up --build)"
+    echo -e "${YELLOW}Шаг 5${NC} - настройка переменных окружения для docker (.env)"
+    echo -e "${YELLOW}Шаг 6${NC} - настройка docker (docker compose up --build)"
     echo -e "   Данный шаг можно не выполнять и запустить в ручном режиме."
     echo -e "-------------------------------------------------------------------------"
 }
@@ -116,7 +117,7 @@ confirm_creation_env() {
     echo ""
     print_info "Шаг 4 - Сейчас мы выполним настройку \u00ABbackend/.env\u00BB и \u00ABfrontend/.env\u00BB"
     echo "Для (frontend) мы выполним следующие действия:"
-    echo -e "\u2014 Перейдем в каталог ${BLUE}${FRONTEND_DIR_DIR}${NC}"
+    echo -e "\u2014 Перейдем в каталог ${BLUE}${FRONTEND_DIR}${NC}"
     echo -e "\u2014 Выполним команду ${BLUE}cp .env.example .env${NC}"
     echo ""
     echo "Для (backend) мы выполним следующие действия:"
@@ -125,6 +126,14 @@ confirm_creation_env() {
     echo -e "\u2014 Настроим ${BLUE}SECRET_KEY${NC} и ${BLUE}POSTGRES_PASSWORD${NC}"
     echo "Все остальные параметры останутся со значениями по умолчанию."
     echo -e "Вы всегда сможете изменить эти параметры в файле ${BLUE}services/backend/.env${NC}"
+    echo ""
+    echo "Для (docker) мы выполним следующие действия:"
+    echo -e "\u2014 Перейдем в каталог ${BLUE}${BASE_DIR}${NC}"
+    echo -e "\u2014 Выполним команду ${BLUE}cp .env.example .env${NC}"
+    echo -e "\u2014 Настроим ${BLUE}NGINX_PORT${NC} (по умолчанию 1338) и ${BLUE}ADMINER_PORT${NC} (по умолчанию 8099)"
+    echo "Все остальные параметры сформируются автоматически."
+    echo -e "Вы всегда сможете изменить эти параметры в файле ${BLUE}.env${NC} в корне проекта."
+    echo -e "После самостоятельного внесенных изменений нужно выполнить ${BLUE}docker compose up --build${NC}."
     
     read -rp $'\nПродолжаем настройку? (y/N): ' confirm
     [[ "$confirm" =~ ^[Yy]$ ]] || { print_info "Отмена."; exit 0; }
@@ -202,6 +211,31 @@ create_env_backend() {
 
 }
 
+create_env_docker() {
+
+    cd $BASE_DIR
+
+    local DB_VOLUME_NAME="$PROJECT_NAME-db-volume"
+    local STATIC_VOLUME_NAME="$PROJECT_NAME-static-volume"
+
+    local NGINX_PORT_DEFAULT=1338
+    local ADMINER_PORT_DEFAULT=8099
+
+    cp .env.example .env
+
+    read -rp $' \u00BB Укажите NGINX_PORT (по умолчанию: '"$NGINX_PORT_DEFAULT"'): ' nginx_port_value
+
+    NGINX_PORT="${nginx_port_value:-$NGINX_PORT_DEFAULT}"
+
+    read -rp $' \u00BB Укажите ADMINER_PORT (по умолчанию: '"$ADMINER_PORT_DEFAULT"'): ' adminer_port_value
+    ADMINER_PORT="${adminer_port_value:-$ADMINER_PORT_DEFAULT}"
+
+    sed -i "s|^NGINX_PORT=.*|NGINX_PORT=\"$NGINX_PORT\"|" .env
+    sed -i "s|^ADMINER_PORT=.*|ADMINER_PORT=\"$ADMINER_PORT\"|" .env
+    sed -i "s|^DB_VOLUME_NAME=.*|DB_VOLUME_NAME=\"$DB_VOLUME_NAME\"|" .env
+    sed -i "s|^STATIC_VOLUME_NAME=.*|STATIC_VOLUME_NAME=\"$STATIC_VOLUME_NAME\"|" .env
+}
+
 main() {
     print_header
     check_requirements
@@ -212,6 +246,7 @@ main() {
     confirm_creation_env
     create_env_frontend
     create_env_backend
+    create_env_docker
     confirm_creation_docker
     create_docker
 }
