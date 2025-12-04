@@ -238,18 +238,18 @@ create_env_docker() {
 }
 
 main() {
-    # print_header
-    # check_requirements
-    # confirm_creation_backend
-    # create_backend
-    # confirm_creation_frontend
-    # create_frontend
-    # confirm_creation_env
-    # create_env_frontend
-    # create_env_backend
-    # create_env_docker
+    print_header
+    check_requirements
+    confirm_creation_backend
+    create_backend
+    confirm_creation_frontend
+    create_frontend
+    confirm_creation_env
+    create_env_frontend
+    create_env_backend
+    create_env_docker
     confirm_creation_docker
-    # create_docker
+    create_docker
 }
 
 main "$@"
