@@ -252,6 +252,9 @@ create_env_docker() {
     sed -i "s|^ADMINER_PORT=.*|ADMINER_PORT=$ADMINER_PORT|" .env
     sed -i "s|^DB_VOLUME_NAME=.*|DB_VOLUME_NAME=\"$DB_VOLUME_NAME\"|" .env
     sed -i "s|^STATIC_VOLUME_NAME=.*|STATIC_VOLUME_NAME=\"$STATIC_VOLUME_NAME\"|" .env
+
+    sed -i "s|^PROJECT_BASE_DIR=.*|PROJECT_BASE_DIR=\"$BASE_DIR\"|" .env
+    sed -i "s|^PROJECT_NAME=.*|PROJECT_NAME=\"$PROJECT_NAME\"|" .env
 }
 
 setup_project_env() {
@@ -270,6 +273,9 @@ next_steps() {
     echo -e ""
     print_success "Настройка проекта ${YELLOW}\u00AB${PROJECT_NAME}\u00BB${NC} завершена!" 
     echo -e "_________________________________________________________________________"
+    echo -e ""
+    echo -e "Осталось немного ..."
+    echo -e "_________________________________________________________________________"
     echo -e "${YELLOW}Шаг 1${NC}" 
     echo -e "В корневом каталоге проекта выполните комманду ${BLUE}docker compose up --build${NC}"
     echo -e "Убедитесь что все отработало и сайт доступен по адресу ${BLUE}http://localhost:${NGINX_PORT}${NC}"
@@ -277,7 +283,6 @@ next_steps() {
     echo -e "${YELLOW}Шаг 2${NC} - создание django admin user"
     echo -e "${BLUE}docker exec -it ${PROJECT_NAME}-service.backend-1 pipenv run python3 manage.py createsuperuser${NC}"
     echo -e "Django Admin доступна тут ${BLUE}http://localhost:1338/admin/${NC}"
-    # echo -e "Подробная инструкция тут --- "
     echo -e ""
     echo -e "${YELLOW}Шаг 3${NC} - наполнить базу данных demo данными"
     echo -e "${BLUE}docker exec -it ${PROJECT_NAME}-service.backend-1 pipenv run python3 manage.py shell_plus${NC}" 
@@ -285,13 +290,12 @@ next_steps() {
     echo -e ">>> ${BLUE}Project.objects.count()${NC}"
     echo -e ">>> ${BLUE}100${NC}"
     echo -e ">>> ${BLUE}Ctrl+D${NC}"
-    # echo -e "Подробная инструкция тут --- "
     echo -e "_________________________________________________________________________"
     echo -e ""
-    print_info "Прочитайте README.md и services/backend/README.md"  
+    print_info "Для получения дополнительной информации ознакомитесь"  
+    echo -e "https://github.com/barmaley350/start-project/blob/main/README.md"
+    echo -e "https://github.com/barmaley350/start-project/blob/main/services/backend/README.md"
     echo -e "_________________________________________________________________________"  
-    echo -e ""
-    echo -e "_________________________________________________________________________"
     echo -e ""
     print_success "Удачи! Всегда открыт PR ;)"  
     echo -e "_________________________________________________________________________"  
@@ -306,7 +310,7 @@ main() {
     confirm_creation_frontend
     create_frontend
     confirm_creation_env
-    setup_project_env
+    # setup_project_env
     create_env_frontend
     create_env_backend
     create_env_docker
