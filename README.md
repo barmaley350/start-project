@@ -130,15 +130,16 @@ chmod +x init.sh
 Либо пройти все эти шаги в ручную.
 
 ## Настройки Backend
-Установите `pipenv` и находясь в каталоге `services/backend` выполните команду
+```
+cd services/backend
+```
 ```
 pipenv sync --dev
 ```
-Выполните настройки backend 
 ```
-cp services/backend/.env.example services/backend/.env
+cp .env.example .env
 ```
-Для успешного старта необходимо указать всего два параметра - `POSTGRES_PASSWORD` и `SECRET_KEY`
+Укажите значения для `POSTGRES_PASSWORD` и `SECRET_KEY`
 ```
 # Укажите SECRET_KEY
 SECRET_KEY='' # <--- Укажите
@@ -164,8 +165,13 @@ pipenv run python -c "from django.core.management.utils import get_random_secret
 Вывод команды скопируйте и впятьте в `SECRET_KEY`
 
 ## Настройки Frontend
-Установите `nodejs` и `npm` и находясь в каталоге `services/frontend` выполните команду
 
+```
+cd services/frontend
+```
+```
+cp .env.example .env
+```
 ```
 npm install
 ```

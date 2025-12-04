@@ -21,7 +21,7 @@ print_header() {
     echo -e "   Проверяется только наличие необходимых программ."             
     echo -e "${YELLOW}Шаг 2${NC} - настройка backend (pipenv sync --dev)"       
     echo -e "${YELLOW}Шаг 3${NC} - настройка frontend (npm install)"
-    echo -e "${YELLOW}Шаг 4${NC} - настройка переменных окружения (/services/backend/.env)"
+    echo -e "${YELLOW}Шаг 4${NC} - настройка переменных окружения для backend/frontend"
     echo -e "${YELLOW}Шаг 5${NC} - настройка docker (docker compose up --build)"
     echo -e "   Данный шаг можно не выполнять и запустить в ручном режиме."
     echo -e "-------------------------------------------------------------------------"
@@ -114,8 +114,12 @@ confirm_creation_docker() {
 
 confirm_creation_env() {
     echo ""
-    print_info "Шаг 4 - Сейчас мы выполним настройку \u00ABbackend/.env\u00BB"
-    echo "Для этого мы выполним следующие действия:"
+    print_info "Шаг 4 - Сейчас мы выполним настройку \u00ABbackend/.env\u00BB и \u00ABfrontend/.env\u00BB"
+    echo "Для (frontend) мы выполним следующие действия:"
+    echo -e "\u2014 Перейдем в каталог ${BLUE}${FRONTEND_DIR_DIR}${NC}"
+    echo -e "\u2014 Выполним команду ${BLUE}cp .env.example .env${NC}"
+    echo ""
+    echo "Для (backend) мы выполним следующие действия:"
     echo -e "\u2014 Перейдем в каталог ${BLUE}${BACKEND_DIR}${NC}"
     echo -e "\u2014 Выполним команду ${BLUE}cp .env.example .env${NC}"
     echo -e "\u2014 Настроим ${BLUE}SECRET_KEY${NC} и ${BLUE}POSTGRES_PASSWORD${NC}"
@@ -171,14 +175,19 @@ create_docker() {
     fi
 }
 
-create_env() {
+create_env_frontend() {
+
+    cd $FRONTEND_DIR
+    cp .env.example .env
+}
+
+create_env_backend() {
 
     cd $BACKEND_DIR
 
     local SECRET_KEY_DEFAULT=$(tr -dc 'A-Za-z0-9' < /dev/urandom | head -c 16)
     local POSTGRES_PASSWORD_DEFAULT=$(tr -dc 'A-Za-z0-9' < /dev/urandom | head -c 16)
 
-    # source .env.example
     cp .env.example .env
 
     read -rp $' \u00BB Укажите SECRET_KEY (по умолчанию: '"$SECRET_KEY_DEFAULT"'): ' secret_key_value
@@ -201,7 +210,8 @@ main() {
     confirm_creation_frontend
     create_frontend
     confirm_creation_env
-    create_env
+    create_env_frontend
+    create_env_backend
     confirm_creation_docker
     create_docker
 }
