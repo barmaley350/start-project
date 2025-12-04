@@ -1,8 +1,8 @@
 volumes:
-  # db-data:
-  # static_volume:
-  ${DB_VOLUME_NAME}:
-  ${STATIC_VOLUME_NAME}:
+  db-data:
+    name: ${DB_VOLUME_NAME}
+  static-files:
+    name: ${STATIC_VOLUME_NAME}
 
 networks:
   internal-net:
@@ -16,11 +16,11 @@ services:
       context: .
       dockerfile: ./services/nginx/Dockerfile
     ports:
-      - ${NGINX_PORT}:80 # <--- Измените 1338 на любой другой свободный локальный порт. Например, 1340
+      - ${NGINX_PORT}:80 # <--- В .env файле измените NGINX_PORT на любой другой свободный порт. Например, 1340
     depends_on:
       - service.frontend
     volumes:
-      - ${STATIC_VOLUME_NAME}:/usr/share/nginx/html/static
+      - static-files:/usr/share/nginx/html/static
       # - ./services/backend/docs/_build/html:/usr/share/nginx/html/docs
     restart: unless-stopped
     networks:
@@ -55,7 +55,7 @@ services:
       - 8000
     volumes:
       - ./services/backend:/app
-      - ${STATIC_VOLUME_NAME}:/app/static
+      - static-files:/app/static
     env_file:
       - ./services/backend/.env
     depends_on:
@@ -79,7 +79,7 @@ services:
       # - db-data:/var/lib/postgresql/MAJOR/docker
       # - ./services/postgres/db:/var/lib/postgresql/MAJOR/docker
       # - ./services/postgres/db:/var/lib/postgresql/18/docker
-      - ${DB_VOLUME_NAME}:/var/lib/postgresql/18/docker
+      - db-data:/var/lib/postgresql/18/docker
     env_file:
       - ./services/backend/.env
     restart: unless-stopped
@@ -94,7 +94,7 @@ services:
     depends_on:
       - service.db_postgres
     ports:
-      - ${ADMINER_PORT}:8080 # <--- Измените порт 8090 на любой свободный, например, 8100
+      - ${ADMINER_PORT}:8080 # <--- В .env файле измените ADMINER_PORT на любой свободный порт, например, 8100 
     environment:
       ADMINER_DEFAULT_SERVER:  service.db_postgres
     restart: unless-stopped
