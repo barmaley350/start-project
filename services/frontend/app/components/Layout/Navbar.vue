@@ -48,7 +48,7 @@ function toggleDarkMode() {
                 <Icon name="i-lucide:arrow-up-right" />
             </div>
             <div class="flex items-center space-x-1 font-normal text-xl">
-                <a href="http://localhost:1338/docs/" target="_blank">Sphinx docs</a>
+                <a href="http://localhost:1338/docs/index.html" target="_blank">Sphinx docs</a>
                 <Icon name="i-lucide:arrow-up-right" />
             </div>
             <div class="flex items-center space-x-1 font-normal text-xl">
