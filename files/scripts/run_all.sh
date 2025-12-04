@@ -1,11 +1,15 @@
-#!/bin/sh
-echo "-------------------------------"
-echo "Hello and welcome"
-echo "-------------------------------"
+#!/bin/bash
 
-BASE_DIR="/home/home/my/RepoCode/empty_dummy_project/"
-PATH_TO_BACKEND="services/backend"
-PATH_TO_BACKEND_DOCS="services/backend/docs"
+SCRIPT_DIR="$(dirname "$0")"
+cd $SCRIPT_DIR
+cd ../../
+BASE_DIR=$(pwd)
+
+. $BASE_DIR/.env
+
+PATH_TO_BACKEND="/services/backend"
+PATH_TO_BACKEND_DOCS="/services/backend/docs"
+
 
 # Generate sphinx docs for backend/django
 cd $BASE_DIR$PATH_TO_BACKEND_DOCS
@@ -42,7 +46,7 @@ fi
 echo "ruff format...OK "
 
 # pytest backend/django
-docker exec -it empty_dummy_project-service.backend-1 pipenv run pytest
+docker exec -it ${PROJECT_NAME}-service.backend-1 pipenv run pytest
 
 if [ $? -ne 0 ]; then
     echo "pytest...Error "
