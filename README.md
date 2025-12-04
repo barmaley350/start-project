@@ -107,7 +107,7 @@ mkrdir test-project
 cd test-project
 ```
 ```
-git clone https://github.com/barmaley350/empty-dummy-project.git .
+git clone https://github.com/barmaley350/start-project.git .
 ```
 
 # Настройка
