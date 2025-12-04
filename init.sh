@@ -239,6 +239,22 @@ create_env_docker() {
     sed -i "s|^STATIC_VOLUME_NAME=.*|STATIC_VOLUME_NAME=\"$STATIC_VOLUME_NAME\"|" .env
 }
 
+next_steps() {
+    echo -e "-------------------------------------------------------------------------"
+    echo -e "     Настройка проекта ${YELLOW}\u00AB${PROJECT_NAME}\u00BB${NC}" завершена!
+    echo -e "-------------------------------------------------------------------------"
+    echo -e "В коневом каталоге проекта выполните комманду ${BLUE}docker compose up --build${NC}."
+    echo -e "Убедитесь что все отработало и сайт доступен по адресу ${BLUE}http://localhost:${NGINX_PORT}${NC}"
+    echo -e ""
+    echo -e "Следующие шаги"
+    echo -e "${YELLOW}Шаг 1${NC} - создать django admin " 
+    echo -e "cd services/backend && docker exec -it ${PROJECT_NAME}-service.backend-1 pipenv run python3 manage.py createsuperuser"
+    echo -e "Подробная инструкция тут --- "
+    echo -e "${YELLOW}Шаг 2${NC} - наполнить базу данных demo данными" 
+    echo -e "Подробная инструкция тут --- "
+    echo -e "-------------------------------------------------------------------------"    
+}
+
 main() {
     print_header
     check_requirements
@@ -250,8 +266,9 @@ main() {
     create_env_frontend
     create_env_backend
     create_env_docker
-    confirm_creation_docker
-    create_docker
+    # confirm_creation_docker
+    # create_docker
+    next_steps
 }
 
 main "$@"
