@@ -111,6 +111,17 @@ git clone https://github.com/barmaley350/empty-dummy-project.git .
 ```
 
 # Настройка
+## Настрока с использованием init.sh
+Вы можете запусть `init.sh` скрипт который поможет в начальной настройке. 
+```
+chmod +x init.sh
+```
+```
+./init.sh
+```
+![img_1](files/img/init_script.png)
+Либо пройти все эти шаги в ручную.
+
 ## Настройки Backend
 Установите `pipenv` и находясь в каталоге `services/backend` выполните команду
 ```
