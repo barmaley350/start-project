@@ -119,7 +119,7 @@ git clone https://github.com/barmaley350/start-project.git .
 
 # Настройка
 ## Настройка с использованием init.sh
-Вы можете запусть `init.sh` скрипт который поможет в начальной настройке. 
+Самый простой способ настроить проект для работы - запусть `init.sh` скрипт который находится в корневой папке проекта. 
 ```
 chmod +x init.sh
 ```
@@ -177,37 +177,34 @@ npm install
 ```
 
 ## Настройки Docker
-По умолчанию `nginx` стартует на порту `1338` а `adminer` на порту `8099`. Если данные порты у вас занят (один или оба), то необходимо внести изменения в `docker-compose.yaml`. Внесите изменения в секцию `ports` для `nginx`
+По умолчанию `nginx` стартует на порту `1338` а `adminer` на порту `8099`. Если данные порты у вас заняты (один или оба), то необходимо внести изменения в `.env` файл, который расположен в коневой папке проекта предварительно скопировав содежимое `.env.example`
+```
+# Абсолютный путь к коневой папке проекта
+# Включая название самой папки проекта
+PROJECT_BASE_DIR=
 
+# Название корневой папки проекта
+PROJECT_NAME=
+
+# Уникально название для docker-compose.yaml:db-data
+DB_VOLUME_NAME=
+
+# Уникальное название для docker-compose.yaml:static-files
+STATIC_VOLUME_NAME=
+
+NGINX_PORT=1338
+ADMINER_PORT=8099
 ```
-service.nginx:
-    build:
-      context: .
-      dockerfile: ./services/nginx/Dockerfile
-    ports:
-      - 1338:80 # Измените 1338 на любой другой свободный локальный порт. Например, 1340
-    depends_on:
-      - service.frontend
-    volumes:
-      - static_volume:/usr/share/nginx/html/static
-    restart: unless-stopped
-    networks:
-      - internal-net
-```
-А также для `adminer`
-```
-  service.adminer:
-    image: adminer
-    depends_on:
-      - service.db_postgres
-    ports:
-      - 8099:8080 # <--- Измените порт 8090 на любой свободный, например, 8100
-    environment:
-      ADMINER_DEFAULT_SERVER:  service.db_postgres
-    restart: unless-stopped
-    networks:
-      - internal-net
-```
+`PROJECT_BASE_DIR` и `PROJECT_NAME` - желательно задать если планируете использовать скрипты
+
+`DB_VOLUME_NAME` и `STATIC_VOLUME_NAME` - настройка данных пареметров вам может никогда не понадобится если вы используете только один проект. 
+
+Если вы используете несколько подобных проектов то вам необходимо выбрать уникальное значение для данных параметров в рамках всех проектов. 
+
+Это делаете потому что `volumes:db-data` и `volumes:static-files` хранятся в docker контейнерах а не на локальных дисках поэтому могут быть проблемы `already in use`
+
+Скрипт `init.sh` создает эти переменные как `$PROJECT_NAME-db-volume` и `$PROJECT_NAME-static-volume`. Вы можете сделать также 
+
 # Первый запуск
 
 Первый запуск - собрать и запустить
