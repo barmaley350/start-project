@@ -15,13 +15,10 @@ PROJECT_NAME=$(basename "$PWD")
 NGINX_PORT=1338
 ADMINER_PORT=8099
 
+# 
 print_header() {
     clear_screen
-
-    echo -e "_________________________________________________________________________"
-    echo -e ""
-    echo -e "Настройка проекта $(print_text_info ${PROJECT_NAME}) ${NC}"
-    echo -e "_________________________________________________________________________"
+    print_text_block empty "$(print_text_success "Настройка проекта \u00AB${PROJECT_NAME}\u00BB")"
     echo -e "$(print_text_info 'Шаг 1') - проверка установленных зависимостей docker, nodejs, npm, pipenv"
     echo -e "Без вашего ведома ничего не устанавливается."
     echo -e "Проверяется только наличие необходимых программ."             
@@ -29,7 +26,6 @@ print_header() {
     echo -e "$(print_text_info 'Шаг 3') - настройка frontend (npm install)"
     echo -e "$(print_text_info 'Шаг 4') - настройка переменных окружения для backend/frontend/docker"
     echo -e "$(print_text_info 'Шаг 5') - что дальше?"
-    echo -e "_________________________________________________________________________"
 
     confirm_to_continue "Переходим к шагу 1 (проверка зависимостей)?"
     
@@ -51,42 +47,42 @@ print_text_info2() {
     echo -e "${BLUE}$1${NC}"
 }
 
+line_output() {
+    for i in {1..70}; do echo -en "\u2501"; done
+    echo -e ""
+}
+
 print_text_block() {
     case $1 in
         success)
-            echo -e "_________________________________________________________________________"
-            echo -e ""
+            line_output
             print_text_success "$2"
-            echo -e "_________________________________________________________________________"
-            echo -e ""
+            line_output
             ;;
         error)
-            echo -e "_________________________________________________________________________"
-            echo -e ""
+            line_output
             print_text_error "$2"
-            echo -e "_________________________________________________________________________"
-            echo -e ""
+            line_output
             ;;
         info)
-            echo -e "_________________________________________________________________________"
-            echo -e ""
+            line_output
             print_text_info "$2"
-            echo -e "_________________________________________________________________________"
-            echo -e ""
+            line_output
             ;;
         info2)
-            echo -e "_________________________________________________________________________"
-            echo -e ""
+            line_output
             print_text_info2 "$2"
-            echo -e "_________________________________________________________________________"
-            echo -e ""
+            line_output
+            ;;
+        empty)
+            line_output
+            echo "$2"
+            line_output
             ;;
         *)
-            echo -e "_________________________________________________________________________"
-            echo -e ""
+            line_output
             print_text_success "$2"
-            echo -e "_________________________________________________________________________"
-            echo -e ""
+            line_output
             ;;
     esac
 }
@@ -99,7 +95,7 @@ clear_screen() {
 confirm_to_continue() {
     prompt="${1:-"Продолжить выполнение?"}"
     echo ""
-    read -rp $"$prompt (Y/y or Enter/n): " confirm
+    read -rp $"${prompt} (Enter/any key to exit): " confirm
     [[ -z "$confirm" || "$confirm" =~ ^[Yy]$ ]] || { print_text_info "Отмена."; exit 0; }
 }
 
@@ -215,9 +211,29 @@ confirm_creation_env1() {
     echo -e "\u2014 Перейдем в каталог $(print_text_info2 ${BASE_DIR})"
     echo -e "\u2014 Выполним команду $(print_text_info2 'cp .env.example .env')"
     echo -e "\u2014 Настроим $(print_text_info2 'NGINX_PORT') (по умолчанию ${NGINX_PORT}) и $(print_text_info2 'ADMINER_PORT') (по умолчанию ${ADMINER_PORT})"
-    echo -e "Вы всегда сможете изменить эти параметры в файле $(print_text_info2 '.env$') в корне проекта."
+    echo -e "Вы всегда сможете изменить эти параметры в файле $(print_text_info2 '.env') в корне проекта."
 
     confirm_to_continue
+}
+
+check_if_env_exist_or_not_text() {
+    case $1 in
+        exist)
+            echo -e "Файл $(print_text_info2 ${2}/.env) существует"
+            echo -e "Настройки по умолчанию берутся из этого файла"
+            echo -e "Если какие-то настройки уже существуют в этом файле, то они сохранят свои значения"
+            ;;
+        copy)
+            echo -e "Файл $(print_text_info2 ${2}/.env) не существует"
+            echo -e "Файл $(print_text_info2 '.env.example') скопирован в $(print_text_info2 '.env')"
+            ;;
+        error)
+            print_text_error "Файл .env.example не существует"
+            echo -e "Каталог - ${2}"
+            echo -e "Проверьте наличие файла $(print_text_info2 '.env.example') в указанном каталоге"
+            echo -e ""
+            ;;
+    esac
 }
 
 create_env_frontend() {
@@ -229,18 +245,16 @@ create_env_frontend() {
     if [ -e ".env.example" ]; then
         if [ -e ".env" ]; then
             . .env
-            else
+            check_if_env_exist_or_not_text exist $FRONTEND_DIR
+        else
             cp .env.example .env
+            check_if_env_exist_or_not_text copy $FRONTEND_DIR
         fi
     else
-        print_text_error "Файл .env.example не существует"
-        echo -e "Каталог - ${FRONTEND_DIR}"
-        echo -e "Проверьте наличие файла $(print_text_info2 '.env.example') в указанном каталоге"
-        echo -e ""
+        check_if_env_exist_or_not_text error $FRONTEND_DIR
         return 1
     fi
 
-    echo -e "Файл $(print_text_info2 '.env.example') скопирован в $(print_text_info2 '.env')"
     print_text_block success "Настройка параметров окружения для frontend завершена"
     confirm_to_continue
 }
@@ -255,20 +269,15 @@ create_env_backend2() {
         if [ -e ".env" ]; then
             . .env
 
-            echo -e "Файл $(print_text_info2 '.env') существует"
-            echo -e "Настройки по умолчанию берутся из файла $(print_text_info2 '.env')"
-            echo -e "Если какие-то настройки уже существуют в этом файле то они сохранят свои значения"
+            check_if_env_exist_or_not_text exist $BACKEND_DIR
         else
             cp .env.example .env
-            echo -e "Файл $(print_text_info2 '.env.example') скопирован в $(print_text_info2 '.env')"
+            check_if_env_exist_or_not_text copy $BACKEND_DIR
             local SECRET_KEY=$(tr -dc 'A-Za-z0-9' < /dev/urandom | head -c 16)
             local POSTGRES_PASSWORD=$(tr -dc 'A-Za-z0-9' < /dev/urandom | head -c 16)
         fi
     else
-        print_text_error "Файл .env.example не существует"
-        echo -e "Каталог - ${BACKEND_DIR}"
-        echo -e "Проверьте наличие файла $(print_text_info2 '.env.example') в указанном каталоге"
-        echo -e ""
+        check_if_env_exist_or_not_text error $BACKEND_DIR
         return 1
     fi
 
@@ -297,24 +306,16 @@ create_env_docker2() {
         if [ -e ".env" ]; then
             . .env
 
-            echo -e "Файл $(print_text_info2 '.env') существует"
-            echo -e "Настройки по умолчанию берутся из файла $(print_text_info2 '.env')"
-            echo -e "Если какие-то настройки уже существуют в этом файле то они сохранят свои значения"
+            check_if_env_exist_or_not_text exist $BASE_DIR
         else
             cp .env.example .env
-            echo -e "Файл $(print_text_info2 '.env.example') скопирован в $(print_text_info2 '.env')"
+            check_if_env_exist_or_not_text copy $BASE_DIR
             
             local DB_VOLUME_NAME="$PROJECT_NAME-db-volume"
             local STATIC_VOLUME_NAME="$PROJECT_NAME-static-volume"
-
-            # local NGINX_PORT=1338
-            # local ADMINER_PORT=8099
         fi
     else
-        print_text_error "Файл .env.example не существует"
-        echo -e "Каталог - ${BASE_DIR}"
-        echo -e "Проверьте наличие файла $(print_text_info2 '.env.example') в указанном каталоге"
-        echo -e ""
+        check_if_env_exist_or_not_text error $BASE_DIR
         return 1
     fi
 
@@ -346,7 +347,8 @@ step4_create_envs() {
 
 next_steps() {
     clear_screen
-    print_text_block success "Настройка проекта $(print_text_info ${PROJECT_NAME}) завершена! Что дальше?" 
+    print_text_block empty "$(print_text_success "Настройка проекта \u00AB${PROJECT_NAME}\u00BB завершена! Что дальше?")"
+
     echo -e "$(print_text_info 'Запустите docker')"
     echo -e "Перейдите в $(print_text_info2 ${BASE_DIR})"
     echo -e "Выполните комманду $(print_text_info2 'docker compose up --build')"
