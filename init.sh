@@ -12,241 +12,318 @@ FRONTEND_DIR="${BASE_DIR}/services/frontend"
 
 PROJECT_NAME=$(basename "$PWD")
 
+NGINX_PORT=1338
+ADMINER_PORT=8099
+
 print_header() {
+    clear_screen
+
     echo -e "_________________________________________________________________________"
     echo -e ""
-    echo -e "Настройка проекта ${YELLOW}\u00AB${PROJECT_NAME}\u00BB${NC}"
+    echo -e "Настройка проекта $(print_text_info ${PROJECT_NAME}) ${NC}"
     echo -e "_________________________________________________________________________"
-    echo -e "${YELLOW}Шаг 1${NC} - проверка установленных зависимостей docker, nodejs, npm, pipenv"
+    echo -e "$(print_text_info 'Шаг 1') - проверка установленных зависимостей docker, nodejs, npm, pipenv"
     echo -e "Без вашего ведома ничего не устанавливается."
     echo -e "Проверяется только наличие необходимых программ."             
-    echo -e "${YELLOW}Шаг 2${NC} - настройка backend (pipenv sync --dev)"       
-    echo -e "${YELLOW}Шаг 3${NC} - настройка frontend (npm install)"
-    echo -e "${YELLOW}Шаг 4${NC} - настройка переменных окружения для backend/frontend"
-    echo -e "${YELLOW}Шаг 5${NC} - настройка переменных окружения для docker (.env)"
+    echo -e "$(print_text_info 'Шаг 2') - настройка backend (pipenv sync --dev)"       
+    echo -e "$(print_text_info 'Шаг 3') - настройка frontend (npm install)"
+    echo -e "$(print_text_info 'Шаг 4') - настройка переменных окружения для backend/frontend/docker"
+    echo -e "$(print_text_info 'Шаг 5') - что дальше?"
     echo -e "_________________________________________________________________________"
+
+    confirm_to_continue "Переходим к шагу 1 (проверка зависимостей)?"
+    
 }
 
-print_success() {
+print_text_success() {
     echo -e "${GREEN} \u2714 $1${NC}"
 }
 
-print_error() {
+print_text_error() {
     echo -e "${RED} \u2718 $1${NC}"
 }
 
-print_info() {
+print_text_info() {
     echo -e "${YELLOW}$1${NC}"
 }
 
-print_info2() {
+print_text_info2() {
     echo -e "${BLUE}$1${NC}"
 }
 
-check_requirements() {
-    echo -e "${YELLOW}Шаг 1 - Проверка зависимостей... ${NC}"
+print_text_block() {
+    case $1 in
+        success)
+            echo -e "_________________________________________________________________________"
+            echo -e ""
+            print_text_success "$2"
+            echo -e "_________________________________________________________________________"
+            echo -e ""
+            ;;
+        error)
+            echo -e "_________________________________________________________________________"
+            echo -e ""
+            print_text_error "$2"
+            echo -e "_________________________________________________________________________"
+            echo -e ""
+            ;;
+        info)
+            echo -e "_________________________________________________________________________"
+            echo -e ""
+            print_text_info "$2"
+            echo -e "_________________________________________________________________________"
+            echo -e ""
+            ;;
+        info2)
+            echo -e "_________________________________________________________________________"
+            echo -e ""
+            print_text_info2 "$2"
+            echo -e "_________________________________________________________________________"
+            echo -e ""
+            ;;
+        *)
+            echo -e "_________________________________________________________________________"
+            echo -e ""
+            print_text_success "$2"
+            echo -e "_________________________________________________________________________"
+            echo -e ""
+            ;;
+    esac
+}
+
+#clear_screen ---------------------
+clear_screen() {
+    clear
+}
+# confirm_to_continue ---------------------
+confirm_to_continue() {
+    prompt="${1:-"Продолжить выполнение?"}"
+    echo ""
+    read -rp $"$prompt (Y/y or Enter/n): " confirm
+    [[ -z "$confirm" || "$confirm" =~ ^[Yy]$ ]] || { print_text_info "Отмена."; exit 0; }
+}
+
+# step1_check_system_requirements ---------------------
+step1_check_system_requirements() {
+    clear_screen
+    print_text_block info "Шаг 1 - Проверка зависимостей"
 
     if ! command -v docker &> /dev/null; then
-        print_error "docker не установлен. Установите docker https://docs.docker.com/desktop/setup/install/linux/ubuntu/"
+        print_text_error "docker не установлен. Установите docker https://docs.docker.com/desktop/setup/install/linux/ubuntu/"
         echo ""
         exit 1
     fi
-    print_success "Docker установлен"
+    print_text_success "Docker установлен"
 
     if ! command -v node &> /dev/null; then
-        print_error "Node.js не установлен. Установите nodejs https://nodejs.org/en/download"
+        print_text_error "Node.js не установлен. Установите nodejs https://nodejs.org/en/download"
         echo ""
         exit 1
     fi
-    print_success "Node.js установлен"
+    print_text_success "Node.js установлен"
 
     if ! command -v npm &> /dev/null; then
-        print_error "npm не установлен. Установите npm https://nodejs.org/en/download"
+        print_text_error "npm не установлен. Установите npm https://nodejs.org/en/download"
         echo ""
         exit 1
     fi
-    print_success "npm установлен"
+    print_text_success "npm установлен"
 
     if ! command -v pipenv &> /dev/null; then
-        print_error "pipenv не установлен. Установите pipenv https://pipenv.pypa.io/en/latest/installation.html"
+        print_text_error "pipenv не установлен. Установите pipenv https://pipenv.pypa.io/en/latest/installation.html"
         echo ""
         exit 1
     fi
-    print_success "pipenv установлен"
-
-    echo -e "_________________________________________________________________________"
-    echo -e ""
-    print_success "Все зависимости установлены"
-    echo -e "_________________________________________________________________________"
+    print_text_success "pipenv установлен"
+    print_text_block success "Шаг 1 - выполнен"
+    confirm_to_continue "Переходим к шагу 2 (настройка backend)?"
 }
 
+# BEGIN backend ---------------------
 confirm_creation_backend() {
-    echo ""
-    print_info "Шаг 2 - Сейчас мы выполним настройку \u00ABbackend\u00BB"
+    clear_screen
+    print_text_block info "Шаг 2 - Сейчас мы выполним настройку \u00ABbackend\u00BB"
     echo "Для этого мы выполним следующие действия:"
-    echo -e "\u2014 Перейдем в каталог ${BLUE}${BACKEND_DIR}${NC}"
-    echo -e "\u2014 Выполним команду ${BLUE}pipenv sync --dev${NC}"
+    echo -e "\u2014 Перейдем в каталог $(print_text_info2 ${BACKEND_DIR})"
+    echo -e "\u2014 Выполним команду $(print_text_info2 'pipenv sync --dev')"
 
-    read -rp $'\nПродолжаем настройку? (y/N): ' confirm
-    [[ "$confirm" =~ ^[Yy]$ ]] || { print_info "Отмена."; exit 0; }
+    confirm_to_continue
 }
 
-confirm_creation_frontend() {
-    echo ""
-    print_info "Шаг 3 - Сейчас мы выполним настройку \u00ABfrontend\u00BB"
-    echo "Для этого мы выполним следующие действия:"
-    echo -e "\u2014 Перейдем в каталог ${BLUE}${FRONTEND_DIR}${NC}"
-    echo -e "\u2014 Выполним команду ${BLUE}npm install${NC}"
-    
-    read -rp $'\nПродолжаем настройку? (y/N): ' confirm
-    [[ "$confirm" =~ ^[Yy]$ ]] || { print_info "Отмена."; exit 0; }
-}
-
-confirm_creation_docker() {
-    echo ""
-    print_info "Шаг 5 - Все готово! Пробуем запустить \u00ABdocker\u00BB"
-    echo "Для этого мы выполним следующие действия:"
-    echo -e "\u2014 Перейдем в каталог ${BLUE}${BASE_DIR}${NC}"
-    echo -e "\u2014 Выполним команду ${BLUE}docker compose up --build${NC}"
-    echo -e ""
-    echo -e "Если все прошло успешно то проект будет доступен ${GREEN}http://localhost:1338/${NC}"
-    echo -e "Если что-то пошло не так - прочитайте README.md"
-
-    read -rp $'\nПродолжаем настройку? (y/N): ' confirm
-    [[ "$confirm" =~ ^[Yy]$ ]] || { print_info "Отмена."; exit 0; }
-}
-
-confirm_creation_env() {
-    echo ""
-    print_info "Шаг 4 - Сейчас мы выполним настройку переменных окружения для"
-    print_info "\u00ABbackend (services/backend/.env)\u00BB, \u00ABfrontend (services/frontend/.env)\u00BB и \u00ABdocker (.env)\u00BB"
-    echo "Для (frontend) мы выполним следующие действия:"
-    echo -e "\u2014 Перейдем в каталог ${BLUE}${FRONTEND_DIR}${NC}"
-    echo -e "\u2014 Выполним команду ${BLUE}cp .env.example .env${NC}"
-    echo ""
-    echo "Для (backend) мы выполним следующие действия:"
-    echo -e "\u2014 Перейдем в каталог ${BLUE}${BACKEND_DIR}${NC}"
-    echo -e "\u2014 Выполним команду ${BLUE}cp .env.example .env${NC}"
-    echo -e "\u2014 Настроим ${BLUE}SECRET_KEY${NC} и ${BLUE}POSTGRES_PASSWORD${NC}"
-    echo "Все остальные параметры останутся со значениями по умолчанию."
-    echo -e "Вы всегда сможете изменить эти параметры в файле ${BLUE}services/backend/.env${NC}"
-    echo ""
-    echo "Для (docker) мы выполним следующие действия:"
-    echo -e "\u2014 Перейдем в каталог ${BLUE}${BASE_DIR}${NC}"
-    echo -e "\u2014 Выполним команду ${BLUE}cp .env.example .env${NC}"
-    echo -e "\u2014 Настроим ${BLUE}NGINX_PORT${NC} (по умолчанию 1338) и ${BLUE}ADMINER_PORT${NC} (по умолчанию 8099)"
-    echo "Все остальные параметры сформируются автоматически."
-    echo -e "Вы всегда сможете изменить эти параметры в файле ${BLUE}.env${NC} в корне проекта."
-    echo -e "После самостоятельного внесенных изменений нужно выполнить ${BLUE}docker compose up --build${NC}."
-    
-    read -rp $'\nПродолжаем настройку? (y/N): ' confirm
-    [[ "$confirm" =~ ^[Yy]$ ]] || { print_info "Отмена."; exit 0; }
-}
-
-create_backend() {
+step2_install_backend() {
     cd $BACKEND_DIR
 
-    if pipenv sync; then
-        echo -e "_________________________________________________________________________"
-        echo -e ""
-        print_success "pipenv sync успешно выполнен"
-        echo -e "_________________________________________________________________________"
+    clear_screen
+    confirm_creation_backend
+
+    if pipenv sync --dev; then
+        print_text_block success "Шаг 2 - выполнен. pipenv sync --dev успешно выполнен"
+        confirm_to_continue "Переходим к шагу 3 (настройка frontend)?"
         return 0
     else
-        echo -e "_________________________________________________________________________"
-        echo -e ""
-        print_error "Ошибка при запуске pipenv sync."
-        echo -e "_________________________________________________________________________"
+        print_text_block error "Возникли ошибки при выполении pipenv sync --dev"
         return 1
     fi
 }
+# END backend ---------------------
 
-create_frontend() {
+# BEGIN frontend
+confirm_creation_frontend() {
+    clear_screen
+    print_text_block info "Шаг 3 - Сейчас мы выполним настройку \u00ABfrontend\u00BB"
+    echo "Для этого мы выполним следующие действия:"
+    echo -e "\u2014 Перейдем в каталог $(print_text_info2 ${FRONTEND_DIR})"
+    echo -e "\u2014 Выполним команду $(print_text_info2 'npm install')"
+    
+    confirm_to_continue 
+}
 
+step3_install_frontend() {
     cd $FRONTEND_DIR
-    
+
+    clear_screen
+    confirm_creation_frontend
+
     if npm install; then
-        echo -e "_________________________________________________________________________"
-        echo -e ""
-        print_success "npm install успешно выполнен"
-        echo -e "_________________________________________________________________________"
+        print_text_block success "Шаг 3 - выполнен. npm install успешно выполнен"
+        confirm_to_continue "Переходим к шагу 4 (настройка переменных окружения)?"
         return 0
     else
-        echo -e "_________________________________________________________________________"
-        echo ""
-        print_error "Ошибка при запуске npm install."
-        echo -e "_________________________________________________________________________"
+        print_text_block error "Ошибка при запуске npm install"
         return 1
     fi
 }
+# END frontend
 
-create_docker() {
+#BEGIN create env for backend
+confirm_creation_env1() {
+    clear_screen
+    print_text_block info "Шаг 4 - Настройка переменных окружения"
+    echo "Для (frontend) мы выполним следующие действия:"
+    echo -e "\u2014 Перейдем в каталог  $(print_text_info2 ${FRONTEND_DIR})"
+    echo -e "\u2014 Выполним команду  $(print_text_info2 'cp .env.example .env')"
 
-    cd $BASE_DIR
-    
-    if docker compose up --build; then
-        echo -e "_________________________________________________________________________"
-        echo -e ""
-        print_success "docker compose up --build успешно выполнен"
-        echo -e "_________________________________________________________________________"
-        return 0
-    else
-        echo -e "_________________________________________________________________________"
-        echo -e ""
-        print_error "Ошибка при запуске docker compose up --build."
-        echo -e "_________________________________________________________________________"
-        return 1
-    fi
+    echo ""
+    echo "Для (backend) мы выполним следующие действия:"
+    echo -e "\u2014 Перейдем в каталог  $(print_text_info2 ${BACKEND_DIR})"
+    echo -e "\u2014 Выполним команду $(print_text_info2 'cp .env.example .env')"
+    echo -e "\u2014 Настроим $(print_text_info2 'SECRET_KEY') и $(print_text_info2 'POSTGRES_PASSWORD')"
+    echo -e "Вы всегда сможете изменить эти параметры в файле $(print_text_info2 'services/backend/.env')"
+
+    echo ""
+    echo "Для (docker) мы выполним следующие действия:"
+    echo -e "\u2014 Перейдем в каталог $(print_text_info2 ${BASE_DIR})"
+    echo -e "\u2014 Выполним команду $(print_text_info2 'cp .env.example .env')"
+    echo -e "\u2014 Настроим $(print_text_info2 'NGINX_PORT') (по умолчанию ${NGINX_PORT}) и $(print_text_info2 'ADMINER_PORT') (по умолчанию ${ADMINER_PORT})"
+    echo -e "Вы всегда сможете изменить эти параметры в файле $(print_text_info2 '.env$') в корне проекта."
+
+    confirm_to_continue
 }
 
 create_env_frontend() {
-    print_info "Настройка параметров окружения для frontend"
+    clear_screen
+    print_text_block info "Настройка параметров окружения для frontend"
 
     cd $FRONTEND_DIR
-    cp .env.example .env
+
+    if [ -e ".env.example" ]; then
+        if [ -e ".env" ]; then
+            . .env
+            else
+            cp .env.example .env
+        fi
+    else
+        print_text_error "Файл .env.example не существует"
+        echo -e "Каталог - ${FRONTEND_DIR}"
+        echo -e "Проверьте наличие файла $(print_text_info2 '.env.example') в указанном каталоге"
+        echo -e ""
+        return 1
+    fi
+
+    echo -e "Файл $(print_text_info2 '.env.example') скопирован в $(print_text_info2 '.env')"
+    print_text_block success "Настройка параметров окружения для frontend завершена"
+    confirm_to_continue
 }
 
-create_env_backend() {
-    print_info "Настройка параметров окружения для backend"
+create_env_backend2() {
+    clear_screen
+    print_text_block info "Настройка параметров окружения для backend"
 
     cd $BACKEND_DIR
 
-    local SECRET_KEY_DEFAULT=$(tr -dc 'A-Za-z0-9' < /dev/urandom | head -c 16)
-    local POSTGRES_PASSWORD_DEFAULT=$(tr -dc 'A-Za-z0-9' < /dev/urandom | head -c 16)
+    if [ -e ".env.example" ]; then
+        if [ -e ".env" ]; then
+            . .env
 
-    cp .env.example .env
+            echo -e "Файл $(print_text_info2 '.env') существует"
+            echo -e "Настройки по умолчанию берутся из файла $(print_text_info2 '.env')"
+            echo -e "Если какие-то настройки уже существуют в этом файле то они сохранят свои значения"
+        else
+            cp .env.example .env
+            echo -e "Файл $(print_text_info2 '.env.example') скопирован в $(print_text_info2 '.env')"
+            local SECRET_KEY=$(tr -dc 'A-Za-z0-9' < /dev/urandom | head -c 16)
+            local POSTGRES_PASSWORD=$(tr -dc 'A-Za-z0-9' < /dev/urandom | head -c 16)
+        fi
+    else
+        print_text_error "Файл .env.example не существует"
+        echo -e "Каталог - ${BACKEND_DIR}"
+        echo -e "Проверьте наличие файла $(print_text_info2 '.env.example') в указанном каталоге"
+        echo -e ""
+        return 1
+    fi
 
-    read -rp $' \u00BB Укажите SECRET_KEY (по умолчанию: '"$SECRET_KEY_DEFAULT"'): ' secret_key_value
+    echo -e ""
+    read -rp $' \u00BB Укажите SECRET_KEY (по умолчанию: '"$SECRET_KEY"'): ' secret_key_value
 
-    SECRET_KEY="${secret_key_value:-$SECRET_KEY_DEFAULT}"
+    SECRET_KEY="${secret_key_value:-$SECRET_KEY}"
 
-    read -rp $' \u00BB Укажите POSTGRES_PASSWORD (по умолчанию: '"$POSTGRES_PASSWORD_DEFAULT"'): ' postgres_password_value
-    POSTGRES_PASSWORD="${postgres_password_value:-$POSTGRES_PASSWORD_DEFAULT}"
+    read -rp $' \u00BB Укажите POSTGRES_PASSWORD (по умолчанию: '"$POSTGRES_PASSWORD"'): ' postgres_password_value
+    POSTGRES_PASSWORD="${postgres_password_value:-$POSTGRES_PASSWORD}"
 
     sed -i "s|^SECRET_KEY=.*|SECRET_KEY=\"$SECRET_KEY\"|" .env
     sed -i "s|^POSTGRES_PASSWORD=.*|POSTGRES_PASSWORD=\"$POSTGRES_PASSWORD\"|" .env
 
+    print_text_block success "Настройка параметров окружения для backend завершена"
+    confirm_to_continue
 }
 
-create_env_docker() {
-    print_info "Настройка параметров окружения для docker"
+create_env_docker2() {
+    clear_screen
+    print_text_block info "Настройка параметров окружения для docker"
 
     cd $BASE_DIR
 
-    local DB_VOLUME_NAME="$PROJECT_NAME-db-volume"
-    local STATIC_VOLUME_NAME="$PROJECT_NAME-static-volume"
+    if [ -e ".env.example" ]; then
+        if [ -e ".env" ]; then
+            . .env
 
-    local NGINX_PORT_DEFAULT=1338
-    local ADMINER_PORT_DEFAULT=8099
+            echo -e "Файл $(print_text_info2 '.env') существует"
+            echo -e "Настройки по умолчанию берутся из файла $(print_text_info2 '.env')"
+            echo -e "Если какие-то настройки уже существуют в этом файле то они сохранят свои значения"
+        else
+            cp .env.example .env
+            echo -e "Файл $(print_text_info2 '.env.example') скопирован в $(print_text_info2 '.env')"
+            
+            local DB_VOLUME_NAME="$PROJECT_NAME-db-volume"
+            local STATIC_VOLUME_NAME="$PROJECT_NAME-static-volume"
 
-    cp .env.example .env
+            # local NGINX_PORT=1338
+            # local ADMINER_PORT=8099
+        fi
+    else
+        print_text_error "Файл .env.example не существует"
+        echo -e "Каталог - ${BASE_DIR}"
+        echo -e "Проверьте наличие файла $(print_text_info2 '.env.example') в указанном каталоге"
+        echo -e ""
+        return 1
+    fi
 
-    read -rp $' \u00BB Укажите NGINX_PORT (по умолчанию: '"$NGINX_PORT_DEFAULT"'): ' nginx_port_value
+    echo -e ""
+    read -rp $' \u00BB Укажите NGINX_PORT (по умолчанию: '"$NGINX_PORT"'): ' nginx_port_value
+    NGINX_PORT="${nginx_port_value:-$NGINX_PORT}"
 
-    NGINX_PORT="${nginx_port_value:-$NGINX_PORT_DEFAULT}"
-
-    read -rp $' \u00BB Укажите ADMINER_PORT (по умолчанию: '"$ADMINER_PORT_DEFAULT"'): ' adminer_port_value
-    ADMINER_PORT="${adminer_port_value:-$ADMINER_PORT_DEFAULT}"
+    read -rp $' \u00BB Укажите ADMINER_PORT (по умолчанию: '"$ADMINER_PORT"'): ' adminer_port_value
+    ADMINER_PORT="${adminer_port_value:-$ADMINER_PORT}"
 
     sed -i "s|^NGINX_PORT=.*|NGINX_PORT=$NGINX_PORT|" .env
     sed -i "s|^ADMINER_PORT=.*|ADMINER_PORT=$ADMINER_PORT|" .env
@@ -255,67 +332,49 @@ create_env_docker() {
 
     sed -i "s|^PROJECT_BASE_DIR=.*|PROJECT_BASE_DIR=\"$BASE_DIR\"|" .env
     sed -i "s|^PROJECT_NAME=.*|PROJECT_NAME=\"$PROJECT_NAME\"|" .env
+
+    print_text_block success "Настройка параметров окружения для docker завершена"
+    confirm_to_continue
 }
 
-setup_project_env() {
-    print_info "Настройка параметров окружения для проекта"
-
-    cd $BASE_DIR
-
-    sed -i "s|^PROJECT_BASE_DIR=.*|PROJECT_BASE_DIR=\"$BASE_DIR\"|" .env
-    sed -i "s|^PROJECT_NAME=.*|PROJECT_NAME=\"$PROJECT_NAME\"|" .env
-
+step4_create_envs() {
+    confirm_creation_env1
+    create_env_frontend
+    create_env_backend2
+    create_env_docker2
 }
 
 next_steps() {
+    clear_screen
+    print_text_block success "Настройка проекта $(print_text_info ${PROJECT_NAME}) завершена! Что дальше?" 
+    echo -e "$(print_text_info 'Запустите docker')"
+    echo -e "Перейдите в $(print_text_info2 ${BASE_DIR})"
+    echo -e "Выполните комманду $(print_text_info2 'docker compose up --build')"
+    echo -e "Убедитесь что все отработало и сайт доступен по адресу $(print_text_info2 http://localhost:${NGINX_PORT})"
     echo -e ""
-    echo -e "_________________________________________________________________________"
+
+    echo -e "$(print_text_info 'Создайте django admin user')"
+    print_text_info2 "docker exec -it ${PROJECT_NAME}-service.backend-1 pipenv run python3 manage.py createsuperuser"
+    echo -e "Django Admin доступна адресу $(print_text_info2 http://localhost:${NGINX_PORT}/admin)"
     echo -e ""
-    print_success "Настройка проекта ${YELLOW}\u00AB${PROJECT_NAME}\u00BB${NC} завершена!" 
-    echo -e "_________________________________________________________________________"
+
+
+    echo -e "$(print_text_info 'Наполнить DB demo данными')"
+    print_text_info2 "docker exec -it ${PROJECT_NAME}-service.backend-1 pipenv run python3 manage.py shell_plus"
+    print_text_info2 '>>> ProjectFactory.create_batch(100)'
+
     echo -e ""
-    echo -e "Осталось немного ..."
-    echo -e "_________________________________________________________________________"
-    echo -e "${YELLOW}Шаг 1${NC}" 
-    echo -e "В корневом каталоге проекта выполните комманду ${BLUE}docker compose up --build${NC}"
-    echo -e "Убедитесь что все отработало и сайт доступен по адресу ${BLUE}http://localhost:${NGINX_PORT}${NC}"
-    echo -e ""
-    echo -e "${YELLOW}Шаг 2${NC} - создание django admin user"
-    echo -e "${BLUE}docker exec -it ${PROJECT_NAME}-service.backend-1 pipenv run python3 manage.py createsuperuser${NC}"
-    echo -e "Django Admin доступна тут ${BLUE}http://localhost:1338/admin/${NC}"
-    echo -e ""
-    echo -e "${YELLOW}Шаг 3${NC} - наполнить базу данных demo данными"
-    echo -e "${BLUE}docker exec -it ${PROJECT_NAME}-service.backend-1 pipenv run python3 manage.py shell_plus${NC}" 
-    echo -e ">>> ${BLUE}ProjectFactory.create_batch(100)${NC}"
-    echo -e ">>> ${BLUE}Project.objects.count()${NC}"
-    echo -e ">>> ${BLUE}100${NC}"
-    echo -e ">>> ${BLUE}Ctrl+D${NC}"
-    echo -e "_________________________________________________________________________"
-    echo -e ""
-    print_info "Для получения дополнительной информации ознакомитесь"  
+    print_text_info "Для получения дополнительной информации ознакомитесь с README.md"  
     echo -e "https://github.com/barmaley350/start-project/blob/main/README.md"
-    echo -e "https://github.com/barmaley350/start-project/blob/main/services/backend/README.md"
-    echo -e "_________________________________________________________________________"  
-    echo -e ""
-    print_success "Удачи! Всегда открыт PR ;)"  
-    echo -e "_________________________________________________________________________"  
     echo -e ""
 }
 
 main() {
     print_header
-    check_requirements
-    confirm_creation_backend
-    create_backend
-    confirm_creation_frontend
-    create_frontend
-    confirm_creation_env
-    # setup_project_env
-    create_env_frontend
-    create_env_backend
-    create_env_docker
-    # confirm_creation_docker
-    # create_docker
+    step1_check_system_requirements
+    step2_install_backend
+    step3_install_frontend
+    step4_create_envs
     next_steps
 }
 
