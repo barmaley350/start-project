@@ -207,3 +207,9 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
 }
+
+# https://django-extensions.readthedocs.io/en/latest/graph_models.html
+GRAPH_MODELS = {
+    "group_models": True,
+    "app_labels": ["testapp", "sphinx_docs", "auth"],
+}
