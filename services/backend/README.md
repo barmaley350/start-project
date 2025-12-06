@@ -6,7 +6,7 @@
 - [Как посмотреть установленные модули](#как-посмотреть-установленные-модули)
 - [Как создать django admin superuser](#как-создать-django-admin-superuser)
 - [Как создать новое приложение django](#как-создать-новое-приложение-django)
-- [Как использовать factory-boy / faker](#как-использовать-factory-boy-и-faker)
+- [Как наполнить базу данных тестовыми данными](#как-наполнить-базу-данных-тестовыми-данными)
 - [Как использовать shell plus](#как-использовать-shell-plus)
 - [Генерация документации Sphinx](#генерация-документации-sphinx)
 - [Как запускать тесты PyTest](#как-запускать-тесты-pytest)
@@ -41,9 +41,15 @@ pipenv run python3 manage.py startapp <app_name> apps/<app_name>
 
 Также не забываем добавить приложение в `settings/settings.py` в раздел `INSTALLED_APPS` в формате `apps.<apps_name>`
 
-# Как использовать factory-boy и faker
+# Как наполнить базу данных тестовыми данными
 В проекте по умолчанию создано приложение `apps/testapp` с одной моделью `Projects`. 
-Наполнить модель данными можно через `shell_plus`
+
+Самый простой способ наполнить базу тестовыми данными это воспользоваться командой
+```
+docker exec -it <project_name>-service.backend-1 pipenv run python3 manage.py filling_models
+```
+
+Наполнить модель данными можно также через `shell_plus`
 который уже установлен и минимально настроен в файле `settings/setting.py` для использования `apps/testapp/factories.py`. 
 ```
 # shell_plus settings
