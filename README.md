@@ -126,7 +126,7 @@ chmod +x init.sh
 ```
 ./init.sh
 ```
-![img_1](files/img/init_script.png)
+![img_1](files/img/initsh/init_script.png)
 Либо пройти все эти шаги в ручную.
 
 ## Настройки Backend
@@ -236,9 +236,9 @@ docker compose up
 
 |   |  | |
 | ------------- | ------------- |  ------------- |
-|![img_1](files/img/s2.png)  | ![img_1](files/img/s3.png)  | ![img_1](files/img/s5.png)  |
-|![img_1](files/img/s1.png)  | ![img_1](files/img/s4.png)  | ![img_1](files/img/s6.png)  |
-|![img_1](files/img/sphinx.png)  | ![img_1](files/img/admin.png)  | ![img_1](files/img/django_rest.png)  |
+|![img_1](files/img/website/s2.png)  | ![img_1](files/img/website/s3.png)  | ![img_1](files/img/website/s5.png)  |
+|![img_1](files/img/website/s1.png)  | ![img_1](files/img/website/s4.png)  | ![img_1](files/img/website/s6.png)  |
+|![img_1](files/img/sphinx/sphinx.png)  | ![img_1](files/img/admin/admin.png)  | ![img_1](files/img/restapi/django_rest.png)  |
 
 # License
 [MIT](LICENSE)
