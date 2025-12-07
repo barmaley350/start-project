@@ -2,15 +2,7 @@
 # После обновления скрипата нужно его скопировать в git/hooks
 # cp files/git/pre-commit .git/hooks
 
-
-# . .env
 PROJECT_BASE_DIR=$(cd -P "$(dirname -- "$0")" && cd ../../ && pwd -P)
-
-# if [ -z "$PROJECT_BASE_DIR" ]; then
-#     echo "Установите значение переменной окружения PROJECT_BASE_DIR в файле .evn который находится в корне проекта"
-#     echo "Значение переменной окружения PROJECT_BASE_DIR должно соответствовать абсолютному пути к папке вашего проекта" 
-#     exit 1
-# fi
 
 PATH_TO_BACKEND=$PROJECT_BASE_DIR"/services/backend"
 
