@@ -1,8 +1,10 @@
 """Docstring for services.backend.apps.testapp.management.commands.sample."""
 
+import random
+
 from django.core.management.base import BaseCommand
 
-from apps.testapp.factories import ProjectFactory
+from apps.testapp.factories import CommentFactory, ProjectFactory
 from apps.testapp.models import Project
 
 
@@ -39,7 +41,9 @@ class Command(BaseCommand):
         if options["clear"]:
             Project.objects.all().delete()
 
-        ProjectFactory.create_batch(count)
+        projects = ProjectFactory.create_batch(count)
+        for project in projects:
+            CommentFactory.create_batch(random.randint(5, 20), project=project)  # noqa: S311
         return Project.objects.count()
 
     def handle(self, *args, **options) -> None:  # noqa: ANN002, ANN003

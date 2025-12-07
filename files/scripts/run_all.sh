@@ -48,6 +48,7 @@ print_text_block() {
 # Generate sphinx docs for backend/django
 generate_sphinx_docs() {
     cd $BASE_DIR$PATH_TO_BACKEND_DOCS
+    pipenv run make clean
     pipenv run make html
 
     if [ $? -ne 0 ]; then
@@ -121,8 +122,8 @@ start_git() {
 
 
 main() {
-    generate_sphinx_docs
     generate_graph_models
+    generate_sphinx_docs
     start_ruff_check
     start_ruff_format
     start_tests

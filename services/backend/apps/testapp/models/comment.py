@@ -4,12 +4,34 @@ from django.contrib.auth.models import User
 from django.db import models
 
 
-class Comments(models.Model):
+class Comment(models.Model):
     """Docstring for Project."""
 
-    title = models.CharField(max_length=250, null=False, blank=False)
+    title = models.CharField(
+        max_length=250, null=False, blank=False, verbose_name="Заголовок"
+    )
     description = models.TextField()
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    project = models.ForeignKey(
+        "Project",
+        on_delete=models.CASCADE,
+        default=1,
+        verbose_name="Проект",
+        related_name="comments",
+    )
+    owner = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name="Кто создал",
+        related_name="comments",
+    )
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата редактирования")
+
+    class Meta:
+        """Docstring for Meta."""
+
+        verbose_name = "Коментарий"
+        verbose_name_plural = "Коментарии"
 
     def __str__(self) -> str:
         """Docstring for __str__.

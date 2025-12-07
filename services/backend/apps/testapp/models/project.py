@@ -14,7 +14,14 @@ class Project(models.Model):
         verbose_name="Заголовок",
     )
     description = models.TextField(verbose_name="Описание проекта")
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name="Кто создал",
+        related_name="projects",
+    )
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата редактирования")
 
     class Meta:
         """Docstring for Meta."""

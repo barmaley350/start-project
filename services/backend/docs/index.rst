@@ -5,7 +5,7 @@ This is the official documentation for **My Django Project**.
 
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Меню
 
    apps/index
