@@ -48,7 +48,8 @@ print_text_info2() {
 }
 
 line_output() {
-    for i in {1..70}; do echo -en "\u2501"; done
+    cols=$(tput cols)
+    for ((i=1; i<=cols; i++)); do echo -en "\u2500"; done
     echo -e ""
 }
 
