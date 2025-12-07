@@ -71,28 +71,35 @@ help() {
     print_text_white "[command] - Основная команда либо команда быстрого доступа\n"
     print_text_white "[command params] - Любые параметы которые принимает эта комманда\n"
     line2    
-    print_text_white "[command] - основные команды\n"
+    print_text_white "[command] - основные команды \n"
     print_text_blue "help | empty"
-    print_text_white " \u2501 Вывод справки\n"
-    print_text_blue "manage [params]"
-    print_text_white " \u2501 Запуск manage.py в backend контейнере\n"    
-    print_text_blue "pytest [params]"
-    print_text_white " \u2501 Запуск pytest в backend контейнере \n"    
+    print_text_white " \u2501 Вывести справку \n"
+    print_text_blue "m | manage [params]"
+    print_text_white " \u2501 Запустить manage.py в backend контейнере \n"    
+    print_text_blue "p | pytest [params]"
+    print_text_white " \u2501 Запустить pytest в backend контейнере \n"    
     print_text_blue "shell"
-    print_text_white " \u2501 Запуск /bin/bash в backend контейнере для ручного выполнения команд\n" 
+    print_text_white " \u2501 Запустить /bin/bash в backend контейнере для ручного выполнения команд\n" 
     line2 
     print_text_white "[command] - Команды быстрого доступа\n"
-    print_text_blue "gendoc"
-    print_text_white " \u2501 Генерация Sphinx документации\n" 
-    print_text_blue "ruffcheck"
-    print_text_white " \u2501 Запуск ruff check\n"     
-    print_text_blue "ruffformat"
-    print_text_white " \u2501 Запуск ruff format\n"   
-    print_text_blue "ruff"
-    print_text_white " \u2501 Запуск ruff check и ruff format\n"       
-    print_text_blue "commit"
-    print_text_white " \u2501 Запуск gendoc, ruff check, ruff format и pytest\n"      
-
+    print_text_blue "m1 | makemigrations"
+    print_text_white " \u2501 Создать миграции django (mange.py makemigrations) \n"     
+    print_text_blue "m2 | migrate"
+    print_text_white " \u2501 Применить миграции django (manage.py migrate) \n"         
+    print_text_blue "sd | sphinx_doc"
+    print_text_white " \u2501 Сгенерировать Sphinx документацию \n" 
+    print_text_blue "rc | ruffcheck"
+    print_text_white " \u2501 Запустить ruff check \n"     
+    print_text_blue "rf | ruffformat"
+    print_text_white " \u2501 Запустить ruff format \n"   
+    print_text_blue "ra | ruff"
+    print_text_white " \u2501 Запустить ruff check и ruff format \n"       
+    print_text_blue "fc | commit"
+    print_text_white " \u2501 Запустить gendoc, ruff check, ruff format и pytest \n"      
+    print_text_blue "da | create_admin"
+    print_text_white " \u2501 Создать django admin createsuperuser \n"  
+    print_text_blue "ca | create_apps [app_name]"
+    print_text_white " \u2501 Создать новое приложение django \n"  
     echo -e ""
 }
 # pytest
@@ -102,6 +109,18 @@ command_pytest() {
 # manage
 command_manage() {
     docker exec -it ${FOLDER_NAME}-service.backend-1 pipenv run python3 manage.py "$@"
+}
+# makemigrations
+command_makemigrations() {
+    docker exec -it ${FOLDER_NAME}-service.backend-1 pipenv run python3 manage.py makemigrations
+}
+# migrate
+command_migrate() {
+    docker exec -it ${FOLDER_NAME}-service.backend-1 pipenv run python3 manage.py migrate
+}
+# create django admin user
+command_createsuperuser() {
+    docker exec -it ${FOLDER_NAME}-service.backend-1 pipenv run python3 manage.py createsuperuser
 }
 # docker shell
 command_shell() {
@@ -177,14 +196,26 @@ command_ruff_format() {
     fi
     print_text_block success "Успешное завершение ruff format $@"
 }
-command_ruff() {
+command_django_apps() {
+    cd $SCRIPT_DIR$PATH_TO_BACKEND
+    pipenv run python3 manage.py startapp $@ apps/$@
+
+    if [ $? -ne 0 ]; then
+        print_text_block error "Ошибка создания приложения apps/$@"
+        exit $?
+    fi
+    print_text_block success "Приложение apps/$@ успешно создано"
+    return 0
+
+}
+command_ruff_all() {
     command_ruff_check
     command_ruff_format
 }
 # commit
 command_commit() {
     command_gendoc
-    command_ruff
+    command_ruff_all
     command_pytest
 }
 # main
@@ -204,27 +235,39 @@ main() {
         shell)
             command_shell "$@"
             ;;
-        manage)
+        m | manage)
             command_manage "$@"
             ;;  
         pytest)
             command_pytest "$@"
             ;;     
-        gendoc)
+        sd | sphinx_doc)
             command_gendoc "$@"
             ;;    
-        ruffcheck)
+        rc | ruffcheck)
             command_ruff_check "$@"
             ;;   
-        ruffformat)
+        rf | ruffformat)
             command_ruff_format "$@"
             ;;   
-        ruff)
-            command_ruff
+        ra | ruff)
+            command_ruff_all
             ;;      
-        commit)
+        fc | commit)
             command_commit
-            ;;                                                       
+            ;;    
+        m1 | makemigrations)
+            command_makemigrations
+            ;;     
+        m2 | migrate)
+            command_migrate
+            ;; 
+        da | create_admin)
+            command_createsuperuser
+            ;;    
+        ca | create_apps)
+            command_django_apps $@
+            ;;                                                                                                 
         *)
             print_text_error "Не известная комманда - $command"
             ;;        
