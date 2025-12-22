@@ -213,3 +213,8 @@ GRAPH_MODELS = {
     "group_models": True,
     "app_labels": ["testapp", "sphinx_docs", "auth"],
 }
+
+# statinc files
+# Не позволяет копировать папку целиком - только файлы из папки  # noqa: RUF003
+# Пришлось создавать ln -s docs/_build/html в apps/sphinx_docs/statis
+# STATICFILES_DIRS = [BASE_DIR / "docs/_build/html"]  # noqa: ERA001

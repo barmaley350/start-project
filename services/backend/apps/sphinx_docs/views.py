@@ -1,33 +1,37 @@
 """Docstring for services.backend.apps.testapp.views."""
 
-from pathlib import Path
-
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import redirect_to_login
 from django.http import HttpRequest, HttpResponse
-from django.views.static import serve
+from django.shortcuts import redirect
+from django.urls import reverse
+from django.views import View
 
-from settings.settings import BASE_DIR
 
+class ProtectedSphinxView(View):
+    """Docstring for ProtectedSphinxView."""
 
-@login_required
-def sphinx_docs(request: HttpRequest, path: str = "") -> HttpResponse:
-    """Функция для ограничения доступа к документации.
+    def get(self, request: HttpRequest, path: str = "") -> HttpResponse:
+        """Docstring for get.
 
-    Документация создается через Sphinx.
-    Доступ получают авторизированные пользователи через /admin/
+        :param self: Description
+        :param request: Description
+        :type request: HttpRequest
+        :param path: Description
+        :type path: str
+        """
+        if not request.user.is_authenticated:
+            login_url = reverse("admin:login")
+            next_url = request.get_full_path()
+            return redirect_to_login(next_url, login_url)
 
-    Из текущих проблем:
+        if not request.user.has_perm("docs.view_sphinx"):
+            return redirect(reverse("home"))
 
-    1. После авторизации нет перехода на страницу документации. Нужно заходить по ссылке
+        response = HttpResponse()
 
-    2. Нужно подправить формат вывода документации
+        # При такое схеме работы есть ну удалять заголовки то будет два заголовка
+        if "Content-Type" in response:
+            del response["Content-Type"]
 
-    :param request: Description
-    :type request: HttpRequest
-    :param path: Description
-    :type path: str
-    :return: Description
-    :rtype: HttpResponse
-    """
-    docs_path = Path(BASE_DIR) / "docs" / "_build" / "html"
-    return serve(request, path, str(docs_path))
+        response["X-Accel-Redirect"] = f"/internal/sphinx/{path}"
+        return response
