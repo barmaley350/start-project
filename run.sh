@@ -163,6 +163,9 @@ generate_graph_models() {
     print_text_white "Создаем graph_models sphinx_docs -o apps/sphinx_docs/docs/_static/sphinx_docs.png\n"
     pipenv run python3 manage.py graph_models sphinx_docs -o apps/sphinx_docs/docs/_static/sphinx_docs.png
 
+    print_text_white "Создаем graph_models jupyter -o apps/sphinx_docs/docs/_static/jupyter.png\n"
+    pipenv run python3 manage.py graph_models jupyter -o apps/sphinx_docs/docs/_static/jupyter.png
+
     print_text_white "Создаем graph_models -o apps/sphinx_docs/docs/_static/all.png\n"
     pipenv run python3 manage.py graph_models -o apps/sphinx_docs/docs/_static/all.png
 
