@@ -32,6 +32,7 @@ extend-exclude = [
     "__pycache",
     "**/migrations/*",
     "manage.py",
+    "apps/jupyter/jupyter_files"
 ]
 
 [tool.ruff.lint]
