@@ -232,11 +232,13 @@ chmod +x ./run.sh
 
 `frontend/nuxtjs` - [http://localhost:1338/](http://localhost:1338/)
 
-`backend/django` - [http://localhost:1338/admin/](http://localhost:1338/)
+`backend/django` `(требуется аутентификация)` - [http://localhost:1338/admin/](http://localhost:1338/)
 
-`backend/sphinx` - [http://localhost:1338/docs/](http://localhost:1338/docs/)
+`backend/sphinx` `(требуется аутентификация)` - [http://localhost:1338/docs/](http://localhost:1338/docs/)
 
-`db/adminer` - [http://localhost:8099/](http://localhost:8099/)
+`db/adminer` `(требуется аутентификация)` - [http://localhost:8099/](http://localhost:8099/)
+
+`jupyter` `(требуется аутентификация)` - [http://localhost:1338/jupyter/](http://localhost:8099/)
 
 
 |   |  | |
