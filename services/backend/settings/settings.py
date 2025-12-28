@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "debug_toolbar",
     "apps.sphinx_docs",
     "apps.testapp",
+    "apps.jupyter",
 ]
 
 MIDDLEWARE = [
