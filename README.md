@@ -37,13 +37,13 @@
 
 `frontend/nuxtjs` - [http://localhost:1338/](http://localhost:1338/)
 
-`backend/django` `(требуется аутентификация)` - [http://localhost:1338/admin/](http://localhost:1338/)
+`backend/django` `(требуется аутентификация)` - [http://localhost:1338/admin/](http://localhost:1338/admin/)
 
 `backend/sphinx` `(требуется аутентификация)` - [http://localhost:1338/docs/](http://localhost:1338/docs/)
 
 `db/adminer` `(требуется аутентификация)` - [http://localhost:8099/](http://localhost:8099/)
 
-`jupyter` `(требуется аутентификация)` - [http://localhost:1338/jupyter/](http://localhost:8099/)
+`jupyter` `(требуется аутентификация)` - [http://localhost:1338/jupyter/](http://localhost:1338/jupyter/)
 
 # Ключевые особенности
 Все компоненты, за исключением `nginx` и `adminer`, доступны только внутри docker.
@@ -111,7 +111,7 @@ cd services/frontend && npm list
 
 # Установка
 ```
-mkrdir test-project
+mkdir test-project
 ```
 ```
 cd test-project
