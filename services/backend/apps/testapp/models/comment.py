@@ -15,7 +15,6 @@ class Comment(models.Model):
     project = models.ForeignKey(
         "Project",
         on_delete=models.CASCADE,
-        default=1,
         verbose_name="Проект",
         related_name="comments",
     )
