@@ -7,6 +7,7 @@ from django.db import models
 class Comment(models.Model):
     """Docstring for Project."""
 
+    parent_id = models.IntegerField(default=0)
     title = models.CharField(
         max_length=250, null=False, blank=False, verbose_name="Заголовок"
     )
