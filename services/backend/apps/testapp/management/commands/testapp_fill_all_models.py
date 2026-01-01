@@ -1,11 +1,11 @@
-"""Docstring for services.backend.apps.testapp.management.commands.sample."""
+"""Docstring для services.backend.apps.testapp.management.commands.testapp_fill_all_models."""  # noqa: E501
 
 import random
 
 from django.core.management.base import BaseCommand
 
-from apps.testapp.factories import CommentFactory, ProjectFactory
-from apps.testapp.models import Project
+from apps.testapp.factories import CommentFactory, ProjectFactory, TagFactory
+from apps.testapp.models import Project, Tag
 
 
 class Command(BaseCommand):
@@ -32,7 +32,7 @@ class Command(BaseCommand):
             help="Количество записей для создания (default=100)",
         )
 
-    def filling_project_model(self, *args, **options) -> int | None:  # noqa: ANN002, ANN003, ARG002
+    def filling_project_models(self, *args, **options) -> int | None:  # noqa: ANN002, ANN003, ARG002
         """Docstring for filling_project_model.
 
         :param self: Description
@@ -40,9 +40,12 @@ class Command(BaseCommand):
         count = options["count"]
         if options["clear"]:
             Project.objects.all().delete()
+            Tag.objects.all().delete()
 
         projects = ProjectFactory.create_batch(count)
+        tags = TagFactory.create_batch(10)
         for project in projects:
+            project.tags.add(*random.choices(tags, k=random.randint(3, 6)))  # noqa: S311
             CommentFactory.create_batch(random.randint(5, 20), project=project)  # noqa: S311
         return Project.objects.count()
 
@@ -53,7 +56,7 @@ class Command(BaseCommand):
         :param args: Description
         :param options: Description
         """
-        count = self.filling_project_model(*args, **options)
+        count = self.filling_project_models(*args, **options)
         self.stdout.write(
             self.style.SUCCESS("Создание записей в моделе Project завершено")
         )
