@@ -12,7 +12,7 @@ export default defineNuxtConfig({
     host: '0.0.0.0'  // Разрешить подключения из Docker
   },
   runtimeConfig: {
-    baseURL: 'http://service.backend:8000/api/',
+    baseURL: 'http://service.drf:8000/api/',
     public: {
     },
   },

@@ -44,9 +44,9 @@ services:
       - internal-net
 
   # ----------------------------------------------------------------------------
-  # django backend
+  # django drf backend
   # ----------------------------------------------------------------------------
-  service.backend:
+  service.drf:
     build:
       context: .
       dockerfile: ./services/drf/Dockerfile

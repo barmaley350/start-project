@@ -357,13 +357,13 @@ next_steps() {
     echo -e ""
 
     echo -e "$(print_text_info 'Создайте django admin user')"
-    print_text_info2 "docker exec -it ${PROJECT_NAME}-service.backend-1 pipenv run python3 manage.py createsuperuser"
+    print_text_info2 "docker exec -it ${PROJECT_NAME}-service.drf-1 pipenv run python3 manage.py createsuperuser"
     echo -e "Django Admin доступна адресу $(print_text_info2 http://localhost:${NGINX_PORT}/admin)"
     echo -e ""
 
 
     echo -e "$(print_text_info 'Наполнить базу данных тестовыми данными')"
-    print_text_info2 "docker exec -it ${PROJECT_NAME}-service.backend-1 pipenv run python3 manage.py filling_models"
+    print_text_info2 "docker exec -it ${PROJECT_NAME}-service.drf-1 pipenv run python3 manage.py filling_models"
 
     echo -e ""
     print_text_info "Для получения дополнительной информации ознакомитесь с README.md"  

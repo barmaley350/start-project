@@ -40,7 +40,7 @@ pipenv graph
 Для создания superuser django admin выполните комманду. `<project_name>` замените на название корневой папки вашего проекта
 
 ```
-docker exec -it <project_name>-service.backend-1 pipenv run python3 manage.py createsuperuser
+docker exec -it <project_name>-service.drf-1 pipenv run python3 manage.py createsuperuser
 ```
 Либо с использованием `run.sh`
 ```
@@ -77,7 +77,7 @@ pipenv run python3 manage.py startapp <app_name> apps/<app_name>
 
 Для сравнения, вот как эта же команда запускается напрямую через Docker.
 ```
-docker exec -it <project_name>-service.backend-1 pipenv run python3 manage.py filling_models
+docker exec -it <project_name>-service.drf-1 pipenv run python3 manage.py filling_models
 ```
 
 Наполнить модель данными можно также через `shell_plus`
@@ -94,7 +94,7 @@ SHELL_PLUS_IMPORTS = [
 ```
 Для сравнения, вот как эта же команда запускается напрямую через Docker.
 ```
-docker exec -it <project_name>-service.backend-1 pipenv run python3 manage.py shell_plus
+docker exec -it <project_name>-service.drf-1 pipenv run python3 manage.py shell_plus
 ```
 Где `<project_name>` название корневой папки вашего проекта. 
 После успешного выполенения команды можем наполнить модель `Project` из `apps/testapp/models.py` произвольными данными
@@ -116,7 +116,7 @@ docker exec -it <project_name>-service.backend-1 pipenv run python3 manage.py sh
 ```
 Для сравнения, вот как эта же команда запускается напрямую через Docker.
 ```
-docker exec -it <project_name>-service.backend-1 pipenv run python3 manage.py shell_plus
+docker exec -it <project_name>-service.drf-1 pipenv run python3 manage.py shell_plus
 ```
 
 # Генерация документации Sphinx

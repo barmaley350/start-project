@@ -105,7 +105,7 @@ start_ruff_format() {
 
 start_tests() {
     # pytest backend/django
-    docker exec -it ${PROJECT_NAME}-service.backend-1 pipenv run pytest
+    docker exec -it ${PROJECT_NAME}-service.drf-1 pipenv run pytest
 
     if [ $? -ne 0 ]; then
         print_text_block error "pytest...Error "

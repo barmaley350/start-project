@@ -104,31 +104,31 @@ help() {
 }
 # pytest
 command_pytest() {
-    docker exec -it ${FOLDER_NAME}-service.backend-1 pipenv run pytest "$@"
+    docker exec -it ${FOLDER_NAME}-service.drf-1 pipenv run pytest "$@"
 }
 # manage
 command_manage() {
-    docker exec -it ${FOLDER_NAME}-service.backend-1 pipenv run python3 manage.py "$@"
+    docker exec -it ${FOLDER_NAME}-service.drf-1 pipenv run python3 manage.py "$@"
 }
 # makemigrations
 command_makemigrations() {
-    docker exec -it ${FOLDER_NAME}-service.backend-1 pipenv run python3 manage.py makemigrations
+    docker exec -it ${FOLDER_NAME}-service.drf-1 pipenv run python3 manage.py makemigrations
 }
 # migrate
 command_migrate() {
-    docker exec -it ${FOLDER_NAME}-service.backend-1 pipenv run python3 manage.py migrate
+    docker exec -it ${FOLDER_NAME}-service.drf-1 pipenv run python3 manage.py migrate
 }
 # create django admin user
 command_createsuperuser() {
-    docker exec -it ${FOLDER_NAME}-service.backend-1 pipenv run python3 manage.py createsuperuser
+    docker exec -it ${FOLDER_NAME}-service.drf-1 pipenv run python3 manage.py createsuperuser
 }
 # docker shell
 command_shell() {
-    docker exec -it ${FOLDER_NAME}-service.backend-1 /bin/bash
+    docker exec -it ${FOLDER_NAME}-service.drf-1 /bin/bash
 }
 # docker shell
 command_shell() {
-    docker exec -it ${FOLDER_NAME}-service.backend-1 /bin/bash
+    docker exec -it ${FOLDER_NAME}-service.drf-1 /bin/bash
 }
 # gendoc
 command_gendoc() {
@@ -180,7 +180,7 @@ generate_graph_models() {
 }
 # collectstatic
 command_collectstatic() {
-    docker exec -it ${FOLDER_NAME}-service.backend-1 pipenv run python3 manage.py collectstatic --noinput
+    docker exec -it ${FOLDER_NAME}-service.drf-1 pipenv run python3 manage.py collectstatic --noinput
 
     if [ $? -ne 0 ]; then
         print_text_block error "Есть ошибки при выполнении collectstatic"
