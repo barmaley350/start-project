@@ -188,7 +188,6 @@ pipenv run python -c "from django.core.management.utils import get_random_secret
 ### Настройки Backend/FastAPI
 > [!IMPORTANT]
 > `backend/fastapi` работает с той же базой данных что и `backend/drf`. 
-
 > Это значит что параметры достура к DB должны быть одинаковые 
 
 ```
