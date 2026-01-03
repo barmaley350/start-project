@@ -34,19 +34,20 @@
 
 
 # Доступность сервисов  
-Если не менялись порты по умолчанию
 
-`frontend/nuxtjs` - [http://localhost:1338/](http://localhost:1338/)
+> [!NOTE]
+> Используйте данные url если не менялись порты по умолчанию. В противном случае замените порт `1338` на тот который вы указали.
 
-`backend/django/api` `(требуется аутентификация)` - [http://localhost:1338/api/](http://localhost:1338/api/)
+|  Сервис |auth| Url | 
+| ------------- | - | ------------- |
+| frontend/nuxtjs | `нет` | [http://localhost:1338/](http://localhost:1338/)  |
+| backend/fastapi  | `нет` | [http://localhost:1338/fastapi/](http://localhost:1338/fastapi/)  |
+| backend/django/api | `нет` | [http://localhost:1338/api/](http://localhost:1338/api/)  |
+| backend/django/admin | `да` | [http://localhost:1338/admin/](http://localhost:1338/admin/)  |
+| backend/sphinx  | `да` | [http://localhost:1338/docs/](http://localhost:1338/docs/)  |
+| db/adminer | `да` | [http://localhost:8099/](http://localhost:8099/)  |
+| jupyter | `да` | [http://localhost:1338/jupyter/](http://localhost:1338/jupyter/)  |
 
-`backend/django/admin` `(требуется аутентификация)` - [http://localhost:1338/admin/](http://localhost:1338/admin/)
-
-`backend/sphinx` `(требуется аутентификация)` - [http://localhost:1338/docs/](http://localhost:1338/docs/)
-
-`db/adminer` `(требуется аутентификация)` - [http://localhost:8099/](http://localhost:8099/)
-
-`jupyter` `(требуется аутентификация)` - [http://localhost:1338/jupyter/](http://localhost:1338/jupyter/)
 
 # Установленные и настроенные модули
 
