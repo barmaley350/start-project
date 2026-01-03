@@ -16,8 +16,10 @@ PROJECT_NAME=$(basename "$PWD")
 NGINX_PORT=1338
 ADMINER_PORT=8099
 
-#
-print_steps_text() {
+# ------------------------------------------------------------------------------------
+# Названия для шагов
+# ------------------------------------------------------------------------------------
+service_print_steps_text() {
     case $1 in
         step1)
             echo -e "Проверка установленных зависимостей docker, nodejs, npm, pipenv"
@@ -53,25 +55,6 @@ print_steps_text() {
             echo -e "Шаг не определен"
             ;;
     esac
-}
-# 
-print_header() {
-    clear_screen
-    print_text_block empty "$(print_text_success "Настройка проекта \u00AB${PROJECT_NAME}\u00BB")"
-    echo -e "Данный скрипт поможет произвести начальную настройку проекта."
-    echo -e "Если вы не планируете вносить какие-либо изменения в настройки по умолчанию,"
-    echo -e "то можете просто нажать Enter на каждом пункте меню либо запусть скрипт с ключом -y"
-    echo -e "Вы также можете использовать s для того чтобы пропусти какой-либо пункт настройки."
-    echo -e ""
-    echo -e "$(print_text_info 'Шаг #1') - $(print_steps_text step1)"
-    echo -e "$(print_text_info 'Шаг #2') - $(print_steps_text step2)"       
-    echo -e "$(print_text_info 'Шаг #3') - $(print_steps_text step3)"    
-    echo -e "$(print_text_info 'Шаг #4') - $(print_steps_text step4)"
-    echo -e "$(print_text_info 'Шаг #5') - $(print_steps_text step5)"
-    echo -e "$(print_text_info 'Шаг #6') - $(print_steps_text step6)"
-
-    confirm_to_continue "Выполнить Шаг #1 - $(print_steps_text step1)?"
-    
 }
 
 print_text_success() {
@@ -147,7 +130,32 @@ print_text_block() {
 clear_screen() {
     clear
 }
-# confirm_to_continue ---------------------
+
+# ------------------------------------------------------------------------------------
+# header
+# ------------------------------------------------------------------------------------
+print_header() {
+    clear_screen
+    print_text_block empty "$(print_text_success "Настройка проекта \u00AB${PROJECT_NAME}\u00BB")"
+    echo -e "Данный скрипт поможет произвести начальную настройку проекта."
+    echo -e "Если вы не планируете вносить какие-либо изменения в настройки по умолчанию,"
+    echo -e "то можете просто нажать Enter на каждом пункте меню либо запусть скрипт с ключом -y"
+    echo -e "Вы также можете использовать s для того чтобы пропусти какой-либо пункт настройки."
+    echo -e ""
+    echo -e "$(print_text_info 'Шаг #1') - $(service_print_steps_text step1)"
+    echo -e "$(print_text_info 'Шаг #2') - $(service_print_steps_text step2)"       
+    echo -e "$(print_text_info 'Шаг #3') - $(service_print_steps_text step3)"    
+    echo -e "$(print_text_info 'Шаг #4') - $(service_print_steps_text step4)"
+    echo -e "$(print_text_info 'Шаг #5') - $(service_print_steps_text step5)"
+    echo -e "$(print_text_info 'Шаг #6') - $(service_print_steps_text step6)"
+
+    confirm_to_continue "Выполнить Шаг #1 - $(service_print_steps_text step1)?"
+    
+}
+
+# ------------------------------------------------------------------------------------
+# confirm
+# ------------------------------------------------------------------------------------
 confirm_to_continue() {
     prompt="${1:-"Продолжить выполнение?"}"
     echo ""
@@ -156,10 +164,12 @@ confirm_to_continue() {
     [[ -z "$confirm" || "$confirm" =~ ^[Yy]$ ]] || { print_text_info "Отмена."; exit 0; }
 }
 
-# step1_check_system_requirements ---------------------
+# ------------------------------------------------------------------------------------
+# Проверка установленных зависимостей в системе
+# ------------------------------------------------------------------------------------
 step1_check_system_requirements() {
     clear_screen
-    print_text_block info "Шаг #1 - $(print_steps_text step1)"
+    print_text_block info "Шаг #1 - $(service_print_steps_text step1)"
 
     if ! command -v docker &> /dev/null; then
         line_output2 "Docker" "$(print_text_error "Error")"
@@ -167,7 +177,6 @@ step1_check_system_requirements() {
         echo ""
         exit 1
     fi
-    # print_text_success "Docker установлен"
     line_output2 "Docker" "$(print_text_success "OK")"
 
     if ! command -v node &> /dev/null; then
@@ -176,7 +185,6 @@ step1_check_system_requirements() {
         echo ""
         exit 1
     fi
-    # print_text_success "Node.js установлен"
     line_output2 "Node.js" "$(print_text_success "OK")"
 
     if ! command -v npm &> /dev/null; then
@@ -185,7 +193,6 @@ step1_check_system_requirements() {
         echo ""
         exit 1
     fi
-    # print_text_success "npm установлен"
     line_output2 "npm" "$(print_text_success "OK")"
 
     if ! command -v pipenv &> /dev/null; then
@@ -194,18 +201,19 @@ step1_check_system_requirements() {
         echo ""
         exit 1
     fi
-    # print_text_success "pipenv установлен"
     line_output2 "pipenv" "$(print_text_success "OK")"
 
     print_text_block success "Шаг #1 успешно выполнен"
-    confirm_to_continue "Выполнить Шаг #2 - $(print_steps_text step2)?"
+    confirm_to_continue "Выполнить Шаг #2 - $(service_print_steps_text step2)?"
 }
 
-# BEGIN backend drf ---------------------
+# ------------------------------------------------------------------------------------
+# 
+# ------------------------------------------------------------------------------------
 confirm_creation_backend_drf() {
     clear_screen
     # print_text_block info "Шаг 2 - Сейчас мы выполним настройку \u00ABbackend/drf\u00BB"
-    print_text_block info "Шаг 2 - $(print_steps_text step2)"
+    print_text_block info "Шаг 2 - $(service_print_steps_text step2)"
     echo "Для этого мы выполним следующие действия:"
     echo -e "\u2014 Перейдем в каталог $(print_text_info2 ${BACKEND_DIR_DRF})"
     echo -e "\u2014 Выполним команду $(print_text_info2 'pipenv sync --dev')"
@@ -213,6 +221,9 @@ confirm_creation_backend_drf() {
     confirm_to_continue
 }
 
+# ------------------------------------------------------------------------------------
+#  
+# ------------------------------------------------------------------------------------
 step2_install_backend_drf() {
     cd $BACKEND_DIR_DRF
 
@@ -220,23 +231,22 @@ step2_install_backend_drf() {
     confirm_creation_backend_drf
 
     if pipenv sync --dev; then
-        # print_text_block success "Шаг 2 - выполнен. pipenv sync --dev успешно выполнен"
-        # confirm_to_continue "Переходим к шагу 3 (настройка backend/fastapi)?"
         print_text_block success "Шаг #2 успешно выполнен"
-        confirm_to_continue "Выполнить Шаг #3 - $(print_steps_text step3)?"        
+        confirm_to_continue "Выполнить Шаг #3 - $(service_print_steps_text step3)?"        
         return 0
     else
         print_text_block error "Возникли ошибки при выполении pipenv sync --dev"
         return 1
     fi
 }
-# END backend drf ---------------------
 
-# BEGIN backend fastapi ---------------------
+# ------------------------------------------------------------------------------------
+# 
+# ------------------------------------------------------------------------------------
 confirm_creation_backend_fastapi() {
     clear_screen
     # print_text_block info "Шаг 3 - Сейчас мы выполним настройку \u00ABbackend/fastapi\u00BB"
-    print_text_block info "Шаг 3 - $(print_steps_text step3)"
+    print_text_block info "Шаг 3 - $(service_print_steps_text step3)"
     echo "Для этого мы выполним следующие действия:"
     echo -e "\u2014 Перейдем в каталог $(print_text_info2 ${BACKEND_DIR_FASTAPI})"
     echo -e "\u2014 Выполним команду $(print_text_info2 'pipenv sync --dev')"
@@ -244,17 +254,15 @@ confirm_creation_backend_fastapi() {
     confirm_to_continue
 }
 
-step2_install_backend_fastapi() {
+step3_install_backend_fastapi() {
     cd $BACKEND_DIR_FASTAPI
 
     clear_screen
     confirm_creation_backend_fastapi
 
     if pipenv sync --dev; then
-        # print_text_block success "Шаг 3 - выполнен. pipenv sync --dev успешно выполнен"
-        # confirm_to_continue "Переходим к шагу 4 (настройка frontend)?"
         print_text_block success "Шаг #3 успешно выполнен"
-        confirm_to_continue "Выполнить Шаг #4 - $(print_steps_text step4)?"           
+        confirm_to_continue "Выполнить Шаг #4 - $(service_print_steps_text step4)?"           
         return 0
     else
         print_text_block error "Возникли ошибки при выполении pipenv sync --dev"
@@ -262,11 +270,13 @@ step2_install_backend_fastapi() {
     fi
 }
 
-# BEGIN frontend
+# ------------------------------------------------------------------------------------
+# 
+# ------------------------------------------------------------------------------------
 confirm_creation_frontend() {
     clear_screen
     # print_text_block info "Шаг 4 - Сейчас мы выполним настройку \u00ABfrontend/nuxtjs\u00BB"
-    print_text_block info "Шаг 4 - $(print_steps_text step4)"
+    print_text_block info "Шаг 4 - $(service_print_steps_text step4)"
     echo "Для этого мы выполним следующие действия:"
     echo -e "\u2014 Перейдем в каталог $(print_text_info2 ${FRONTEND_DIR})"
     echo -e "\u2014 Выполним команду $(print_text_info2 'npm install')"
@@ -274,46 +284,57 @@ confirm_creation_frontend() {
     confirm_to_continue 
 }
 
-step3_install_frontend() {
+# ------------------------------------------------------------------------------------
+# 
+# ------------------------------------------------------------------------------------
+step4_install_frontend() {
     cd $FRONTEND_DIR
 
     clear_screen
     confirm_creation_frontend
 
     if npm install; then
-        # print_text_block success "Шаг 4 - выполнен. npm install успешно выполнен"
-        # confirm_to_continue "Переходим к шагу 5 (настройка переменных окружения)?"
         print_text_block success "Шаг #4 успешно выполнен"
-        confirm_to_continue "Выполнить Шаг #5 - $(print_steps_text step5)?"           
+        confirm_to_continue "Выполнить Шаг #5 - $(service_print_steps_text step5)?"           
         return 0
     else
         print_text_block error "Ошибка при запуске npm install"
         return 1
     fi
 }
-# END frontend
 
-#BEGIN create env for backend
-confirm_creation_env1() {
+# ------------------------------------------------------------------------------------
+# 
+# ------------------------------------------------------------------------------------
+confirm_creation_env() {
     clear_screen
     # print_text_block info "Шаг 5 - Настройка переменных окружения"
-    print_text_block info "Шаг 5 - $(print_steps_text step5)"
+    print_text_block info "Шаг 5 - $(service_print_steps_text step5)"
     # echo "Для (frontend) мы выполним следующие действия:"
-    echo -e "$(print_steps_text step53)"
+    echo -e "$(service_print_steps_text step53)"
     echo -e "\u2014 Перейдем в каталог  $(print_text_info2 ${FRONTEND_DIR})"
     echo -e "\u2014 Выполним команду  $(print_text_info2 'cp .env.example .env')"
 
     echo ""
-    # echo "Для (backend) мы выполним следующие действия:"
-    echo -e "$(print_steps_text step51)"
+    # echo "Для (backend/drf) мы выполним следующие действия:"
+    echo -e "$(service_print_steps_text step51)"
     echo -e "\u2014 Перейдем в каталог  $(print_text_info2 ${BACKEND_DIR_DRF})"
     echo -e "\u2014 Выполним команду $(print_text_info2 'cp .env.example .env')"
     echo -e "\u2014 Настроим $(print_text_info2 'SECRET_KEY') и $(print_text_info2 'POSTGRES_PASSWORD')"
     echo -e "Вы всегда сможете изменить эти параметры в файле $(print_text_info2 'services/drf/.env')"
 
     echo ""
+    # echo "Для (backend/fastapi) мы выполним следующие действия:"
+    echo -e "$(service_print_steps_text step52)"
+    echo -e "\u2014 Перейдем в каталог  $(print_text_info2 ${BACKEND_DIR_FASTAPI})"
+    echo -e "\u2014 Выполним команду $(print_text_info2 'cp .env.example .env')"
+    echo -e "\u2014 Настроим $(print_text_info2 'POSTGRES_PASSWORD')"
+    echo -e "По умолчанию настройки работы с db копируются из $(print_text_info2 'services/drf/.env')"
+    echo -e "Вы всегда сможете изменить эти параметры в файле $(print_text_info2 'services/fastapi/.env')"
+
+    echo ""
     # echo "Для (docker) мы выполним следующие действия:"
-    echo -e "$(print_steps_text step54)"
+    echo -e "$(service_print_steps_text step54)"
     echo -e "\u2014 Перейдем в каталог $(print_text_info2 ${BASE_DIR})"
     echo -e "\u2014 Выполним команду $(print_text_info2 'cp .env.example .env')"
     echo -e "\u2014 Настроим $(print_text_info2 'NGINX_PORT') (по умолчанию ${NGINX_PORT}) и $(print_text_info2 'ADMINER_PORT') (по умолчанию ${ADMINER_PORT})"
@@ -322,29 +343,39 @@ confirm_creation_env1() {
     confirm_to_continue
 }
 
+# ------------------------------------------------------------------------------------
+# 
+# ------------------------------------------------------------------------------------
 check_if_env_exist_or_not_text() {
     case $1 in
+        reuse)
+            echo -e "Файл $(print_text_info2 ${2}/.env) существует."
+            echo -e "Настройки по умолчанию копируются из этого файла."
+            ;;    
         exist)
-            echo -e "Файл $(print_text_info2 ${2}/.env) существует"
-            echo -e "Настройки по умолчанию берутся из этого файла"
-            echo -e "Если какие-то настройки уже существуют в этом файле, то они сохранят свои значения"
+            echo -e "Файл $(print_text_info2 ${2}/.env) существует."
+            echo -e "Настройки по умолчанию берутся из этого файла."
+            echo -e "Если какие-то настройки уже существуют в этом файле, то они сохранят свои значения."
             ;;
         copy)
-            echo -e "Файл $(print_text_info2 ${2}/.env) не существует"
-            echo -e "Файл $(print_text_info2 '.env.example') скопирован в $(print_text_info2 '.env')"
+            echo -e "Файл $(print_text_info2 ${2}/.env) не существует."
+            echo -e "Файл $(print_text_info2 '.env.example') скопирован в $(print_text_info2 '.env')."
             ;;
         error)
-            print_text_error "Файл .env.example не существует"
-            echo -e "Каталог - ${2}"
-            echo -e "Проверьте наличие файла $(print_text_info2 '.env.example') в указанном каталоге"
+            print_text_error "Файл .env.example не существует."
+            echo -e "Каталог - ${2}."
+            echo -e "Проверьте наличие файла $(print_text_info2 '.env.example') в указанном каталоге."
             echo -e ""
             ;;
     esac
 }
 
-create_env_frontend() {
+# ------------------------------------------------------------------------------------
+# 
+# ------------------------------------------------------------------------------------
+create_env_frontend_nuxtjs() {
     clear_screen
-    print_text_block info "$(print_steps_text step53)"
+    print_text_block info "$(service_print_steps_text step53)"
 
     cd $FRONTEND_DIR
 
@@ -362,16 +393,19 @@ create_env_frontend() {
     fi
 
     # print_text_block success "Настройка параметров окружения для frontend завершена"
-    print_text_block success "$(print_steps_text step53) завершена"
-    # line_output2 "$(print_steps_text step53)" "$(print_text_success "Ok")"
+    print_text_block success "$(service_print_steps_text step53) завершена"
+    # line_output2 "$(service_print_steps_text step53)" "$(print_text_success "Ok")"
     # confirm_to_continue
-    confirm_to_continue "Далее - $(print_steps_text step51)"
+    confirm_to_continue "Далее - $(service_print_steps_text step51)"
 }
 
-create_env_backend2() {
+# ------------------------------------------------------------------------------------
+# 
+# ------------------------------------------------------------------------------------
+create_env_backend_drf() {
     clear_screen
     # print_text_block info "Настройка параметров окружения для backend"
-    print_text_block info "$(print_steps_text step51)"
+    print_text_block info "$(service_print_steps_text step51)"
 
     cd $BACKEND_DIR_DRF
 
@@ -403,14 +437,50 @@ create_env_backend2() {
     sed -i "s|^POSTGRES_PASSWORD=.*|POSTGRES_PASSWORD=\"$POSTGRES_PASSWORD\"|" .env
 
     # print_text_block success "Настройка параметров окружения для backend завершена"
-    print_text_block success "$(print_steps_text step51) завершена"
-    confirm_to_continue "Далее - $(print_steps_text step54)"
+    print_text_block success "$(service_print_steps_text step51) завершена"
+    confirm_to_continue "Далее - $(service_print_steps_text step52)"
 }
 
-create_env_docker2() {
+# ------------------------------------------------------------------------------------
+# 
+# ------------------------------------------------------------------------------------
+create_env_backend_fastapi() {
+    clear_screen
+    # print_text_block info "Настройка параметров окружения для backend"
+    print_text_block info "$(service_print_steps_text step52)"
+
+    cd $BACKEND_DIR_DRF
+    . .env
+    check_if_env_exist_or_not_text reuse $BACKEND_DIR_DRF
+
+    cd $BACKEND_DIR_FASTAPI
+
+    if [ -e ".env.example" ]; then
+        if [ -e ".env" ]; then
+            check_if_env_exist_or_not_text exist $BACKEND_DIR_FASTAPI
+        else
+            cp .env.example .env
+            check_if_env_exist_or_not_text copy $BACKEND_DIR_FASTAPI
+        fi
+    else
+        check_if_env_exist_or_not_text error $BACKEND_DIR_FASTAPI
+        return 1
+    fi
+
+    sed -i "s|^POSTGRES_PASSWORD=.*|POSTGRES_PASSWORD=\"$POSTGRES_PASSWORD\"|" .env
+
+    # print_text_block success "Настройка параметров окружения для backend завершена"
+    print_text_block success "$(service_print_steps_text step52) завершена"
+    confirm_to_continue "Далее - $(service_print_steps_text step54)"
+}
+
+# ------------------------------------------------------------------------------------
+# 
+# ------------------------------------------------------------------------------------
+create_env_docker() {
     clear_screen
     # print_text_block info "Настройка параметров окружения для docker"
-    print_text_block info "$(print_steps_text step54)"
+    print_text_block info "$(service_print_steps_text step54)"
 
     cd $BASE_DIR
 
@@ -447,18 +517,25 @@ create_env_docker2() {
     # sed -i "s|^PROJECT_NAME=.*|PROJECT_NAME=\"$PROJECT_NAME\"|" .env
 
     # print_text_block success "Настройка параметров окружения для docker завершена"
-    print_text_block success "$(print_steps_text step54) завершена"
-    confirm_to_continue "Далее - $(print_steps_text step6)"
+    print_text_block success "$(service_print_steps_text step54) завершена"
+    confirm_to_continue "Далее - $(service_print_steps_text step6)"
 }
 
-step4_create_envs() {
-    confirm_creation_env1
-    create_env_frontend
-    create_env_backend2
-    create_env_docker2
+# ------------------------------------------------------------------------------------
+# 
+# ------------------------------------------------------------------------------------
+step5_create_envs() {
+    confirm_creation_env
+    create_env_frontend_nuxtjs
+    create_env_backend_drf
+    create_env_backend_fastapi
+    create_env_docker
 }
 
-next_steps() {
+# ------------------------------------------------------------------------------------
+# 
+# ------------------------------------------------------------------------------------
+step6_next_steps() {
     clear_screen
     print_text_block empty "$(print_text_success "Настройка проекта \u00AB${PROJECT_NAME}\u00BB завершена! Что дальше?")"
 
@@ -491,14 +568,17 @@ next_steps() {
     echo -e ""
 }
 
+# ------------------------------------------------------------------------------------
+# 
+# ------------------------------------------------------------------------------------
 main() {
     print_header
     step1_check_system_requirements
     step2_install_backend_drf
-    step2_install_backend_fastapi
-    step3_install_frontend
-    step4_create_envs
-    next_steps
+    step3_install_backend_fastapi
+    step4_install_frontend
+    step5_create_envs
+    step6_next_steps
 }
 
 main "$@"
