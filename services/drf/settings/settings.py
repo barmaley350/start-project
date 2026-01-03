@@ -206,7 +206,7 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_RENDERER_CLASSES": DEFAULT_RENDERER_CLASSES,
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-    "PAGE_SIZE": 10,
+    "PAGE_SIZE": 5,
 }
 
 # https://django-extensions.readthedocs.io/en/latest/graph_models.html
