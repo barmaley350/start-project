@@ -74,7 +74,7 @@ coverage = "*"
 ```
 Для получения дополнительной информации
 ```
-cd services/drf && pipenv graph
+cd services/drf/ && pipenv graph
 ```
 
 ## Frontend Nuxtjs
@@ -95,7 +95,7 @@ cd services/drf && pipenv graph
 ```
 Для получения дополнительной информации
 ```
-cd services/nuxtjs && npm list
+cd services/nuxtjs/ && npm list
 ``` 
 
 # Что нужно для локальной работы
@@ -116,7 +116,7 @@ cd services/nuxtjs && npm list
 mkdir test-project
 ```
 ```
-cd test-project
+cd test-project/
 ```
 ```
 git clone https://github.com/barmaley350/start-project.git .
@@ -138,7 +138,7 @@ chmod +x init.sh
 Для лучшего понимания, как всё работает, вы можете настроить работу в ручном режиме, настраивая каждый сервис по отдельности. Вы также можете использовать эту информацию для внесения изменений после установки и настройки с использованием `init.sh`.
 ### Настройки Backend
 ```
-cd services/drf
+cd services/drf/
 ```
 ```
 pipenv sync --dev
@@ -169,12 +169,12 @@ cd services/drf/
 ```
 pipenv run python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
 ```
-Вывод команды скопируйте и впятьте в `SECRET_KEY`
+Вывод команды скопируйте и вставьте в `SECRET_KEY`
 
 ### Настройки Frontend
 
 ```
-cd services/nuxtjs
+cd services/nuxtjs/
 ```
 ```
 cp .env.example .env
@@ -199,9 +199,9 @@ ADMINER_PORT=8099
 
 Если вы используете несколько подобных проектов то вам необходимо выбрать уникальное значение для данных параметров в рамках всех проектов. 
 
-Это делаете потому что `volumes:db-data` и `volumes:static-files` хранятся в docker контейнерах а не на локальных дисках поэтому могут быть проблемы `already in use`
+Это делается потому что `volumes:db-data` и `volumes:static-files` хранятся в docker контейнерах а не на локальных дисках поэтому могут быть проблемы `already in use`
 
-Скрипт `init.sh` создает эти переменные как `$PROJECT_NAME-db-volume` и `$PROJECT_NAME-static-volume`. Вы можете сделать также 
+Скрипт `init.sh` создает эти переменные как `$PROJECT_NAME-db-volume` и `$PROJECT_NAME-static-volume`. Вы можете сделать также.
 
 # Первый запуск
 
@@ -215,7 +215,11 @@ docker compose up
 ```
 
 # Настройка git pre-commit
-Модуль `pre-commit` работает относительно текущей папки запуска git. В данном шаблоне структура папок организована по-другому. В целом всё работает также, просто на самописном `sh` скрипте без использования модуля `pre-commit`. Также немного изменена логика: `git commit` не пройдет, если есть любые ошибки и изменения `ruff check` и `ruff format`. 
+
+> [!NOTE]
+> Модуль `pre-commit` работает относительно текущей папки запуска git. 
+
+В данном шаблоне структура папок организована по-другому. В целом всё работает также, просто на самописном `sh` скрипте без использования модуля `pre-commit`. Также немного изменена логика: `git commit` не пройдет, если есть любые ошибки и изменения `ruff check` и `ruff format`. 
 
 Скопируйте файл и теперь при запуске `git commit` сначала будут запускаться `ruff check` и `ruff format` и если нет ошибок то запустится `git commit`
 ```
