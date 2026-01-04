@@ -40,26 +40,30 @@ function toggleDarkMode() {
 <template>
     <div class="flex justify-between sticky top-0 z-50 py-5 px-5 bg-white dark:bg-gray-900">
         <div class="flex space-x-5 justify-start">
-            <div class="flex items-center space-x-1 font-normal text-xl" v-for="url in urls_left">
+            <div class="flex items-center space-x-1 font-normal" v-for="url in urls_left">
                 <NuxtLink class="navbar-brand" :to="url['url']">{{ url['label'] }}</NuxtLink>
             </div>
-            <div class="flex items-center space-x-1 font-normal text-xl">
+            <div class="flex items-center space-x-1 font-normal">
                 <a href="http://localhost:1338/admin/" target="_blank">Django Admin</a>
                 <Icon name="i-lucide:arrow-up-right" />
             </div>
-            <div class="flex items-center space-x-1 font-normal text-xl">
+            <div class="flex items-center space-x-1 font-normal">
                 <a href="http://localhost:1338/docs/index.html" target="_blank">Sphinx docs</a>
                 <Icon name="i-lucide:arrow-up-right" />
             </div>
-            <div class="flex items-center space-x-1 font-normal text-xl">
+            <div class="flex items-center space-x-1 font-normal">
                 <a href="http://localhost:8099/" target="_blank">Adminer</a>
                 <Icon name="i-lucide:arrow-up-right" />
             </div>
-            <div class="flex items-center space-x-1 font-normal text-xl">
-                <a href="http://localhost:1338/api/" target="_blank">API</a>
+            <div class="flex items-center space-x-1 font-normal">
+                <a href="http://localhost:1338/api/" target="_blank">API DRF</a>
                 <Icon name="i-lucide:arrow-up-right" />
             </div>
-            <div class="flex items-center space-x-1 font-normal text-xl">
+            <div class="flex items-center space-x-1 font-normal">
+                <a href="http://localhost:1338/fastapi/" target="_blank">API FastAPI</a>
+                <Icon name="i-lucide:arrow-up-right" />
+            </div>
+            <div class="flex items-center space-x-1 font-normal">
                 <a href="http://localhost:1338/jupyter/" target="_blank">Jupyter</a>
                 <Icon name="i-lucide:arrow-up-right" />
             </div>
