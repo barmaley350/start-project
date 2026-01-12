@@ -12,6 +12,8 @@ sqlalchemy = "*"
 psycopg2-binary = "*"
 ruff = "*"
 pylint = "*"
+eralchemy = "*"
+graphviz = "*"
 
 [dev-packages]
 

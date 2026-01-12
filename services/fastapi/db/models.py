@@ -1,296 +1,519 @@
-from typing import Optional
-import datetime
+# models.py
+import uuid
+from enum import StrEnum
 
-from sqlalchemy import BigInteger, Boolean, CheckConstraint, DateTime, ForeignKeyConstraint, Identity, Index, Integer, PrimaryKeyConstraint, SmallInteger, String, Text, UniqueConstraint
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy import (
+    Column,
+    String,
+    ForeignKey,
+    TIMESTAMP,
+    SmallInteger,
+    UniqueConstraint,
+    Integer,
+    Float,
+    Boolean,
+    Enum,
+)
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship, declarative_base
+from sqlalchemy.sql import func
 
-class Base(DeclarativeBase):
+Base = declarative_base()
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
     pass
+else:
+
+    def dataclass_sql(cls):
+        return cls
 
 
-class AuthCheckAdminerpermission(Base):
-    __tablename__ = 'auth_check_adminerpermission'
-    __table_args__ = (
-        PrimaryKeyConstraint('id', name='auth_check_adminerpermission_pkey'),
+Base = declarative_base()
+
+
+# =============== Association Tables ===============
+class UserGoal(Base):
+    """Association table for user-goal many-to-many relationship"""
+
+    __tablename__ = "user_goals"
+
+    user_id = Column(
+        UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), primary_key=True
+    )
+    goal_id = Column(
+        UUID(as_uuid=True), ForeignKey("goals.id", ondelete="CASCADE"), primary_key=True
     )
 
-    id: Mapped[int] = mapped_column(BigInteger, Identity(start=1, increment=1, minvalue=1, maxvalue=9223372036854775807, cycle=False, cache=1), primary_key=True)
 
+class UserSkill(Base):
+    """Association table for user-skill many-to-many relationship (general skills)"""
 
-class AuthCheckJupyterpermission(Base):
-    __tablename__ = 'auth_check_jupyterpermission'
-    __table_args__ = (
-        PrimaryKeyConstraint('id', name='auth_check_jupyterpermission_pkey'),
+    __tablename__ = "user_skills"
+
+    user_id = Column(
+        UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), primary_key=True
+    )
+    skill_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("skills.id", ondelete="CASCADE"),
+        primary_key=True,
     )
 
-    id: Mapped[int] = mapped_column(BigInteger, Identity(start=1, increment=1, minvalue=1, maxvalue=9223372036854775807, cycle=False, cache=1), primary_key=True)
 
+class UserMentorSkill(Base):
+    """Association table for user-mentor_skill many-to-many relationship"""
 
-class AuthCheckSphinxdocspermission(Base):
-    __tablename__ = 'auth_check_sphinxdocspermission'
-    __table_args__ = (
-        PrimaryKeyConstraint('id', name='auth_check_sphinxdocspermission_pkey'),
+    __tablename__ = "user_mentor_skills"
+
+    user_id = Column(
+        UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), primary_key=True
+    )
+    skill_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("skills.id", ondelete="CASCADE"),
+        primary_key=True,
     )
 
-    id: Mapped[int] = mapped_column(BigInteger, Identity(start=1, increment=1, minvalue=1, maxvalue=9223372036854775807, cycle=False, cache=1), primary_key=True)
 
+class UserMenteeSkill(Base):
+    """Association table for user-mentee_skill many-to-many relationship"""
 
-class AuthGroup(Base):
-    __tablename__ = 'auth_group'
-    __table_args__ = (
-        PrimaryKeyConstraint('id', name='auth_group_pkey'),
-        UniqueConstraint('name', name='auth_group_name_key'),
-        Index('auth_group_name_a6ea08ec_like', 'name')
+    __tablename__ = "user_mentee_skills"
+
+    user_id = Column(
+        UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), primary_key=True
+    )
+    skill_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("skills.id", ondelete="CASCADE"),
+        primary_key=True,
     )
 
-    id: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1, minvalue=1, maxvalue=2147483647, cycle=False, cache=1), primary_key=True)
-    name: Mapped[str] = mapped_column(String(150), nullable=False)
 
-    auth_user_groups: Mapped[list['AuthUserGroups']] = relationship('AuthUserGroups', back_populates='group')
-    auth_group_permissions: Mapped[list['AuthGroupPermissions']] = relationship('AuthGroupPermissions', back_populates='group')
+class UserQuant(Base):
+    """User availability in time quants"""
 
+    __tablename__ = "user_quants"
 
-class AuthUser(Base):
-    __tablename__ = 'auth_user'
-    __table_args__ = (
-        PrimaryKeyConstraint('id', name='auth_user_pkey'),
-        UniqueConstraint('username', name='auth_user_username_key'),
-        Index('auth_user_username_6821ab7c_like', 'username')
+    user_id = Column(
+        UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), primary_key=True
+    )
+    quant_id = Column(
+        SmallInteger, ForeignKey("time_quants.id", ondelete="CASCADE"), primary_key=True
     )
 
-    id: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1, minvalue=1, maxvalue=2147483647, cycle=False, cache=1), primary_key=True)
-    password: Mapped[str] = mapped_column(String(128), nullable=False)
-    is_superuser: Mapped[bool] = mapped_column(Boolean, nullable=False)
-    username: Mapped[str] = mapped_column(String(150), nullable=False)
-    first_name: Mapped[str] = mapped_column(String(150), nullable=False)
-    last_name: Mapped[str] = mapped_column(String(150), nullable=False)
-    email: Mapped[str] = mapped_column(String(254), nullable=False)
-    is_staff: Mapped[bool] = mapped_column(Boolean, nullable=False)
-    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False)
-    date_joined: Mapped[datetime.datetime] = mapped_column(DateTime(True), nullable=False)
-    last_login: Mapped[Optional[datetime.datetime]] = mapped_column(DateTime(True))
 
-    auth_user_groups: Mapped[list['AuthUserGroups']] = relationship('AuthUserGroups', back_populates='user')
-    django_admin_log: Mapped[list['DjangoAdminLog']] = relationship('DjangoAdminLog', back_populates='user')
-    testapp_project: Mapped[list['TestappProject']] = relationship('TestappProject', back_populates='owner')
-    auth_user_user_permissions: Mapped[list['AuthUserUserPermissions']] = relationship('AuthUserUserPermissions', back_populates='user')
-    testapp_comment: Mapped[list['TestappComment']] = relationship('TestappComment', back_populates='owner')
+# =============== Main Models ===============
+class City(Base):
+    """City model"""
+
+    __tablename__ = "cities"
+
+    id = Column(Integer, primary_key=True)
+    country = Column(String(128))
+    city = Column(String(256), nullable=False)
+    timezone = Column(String(256), nullable=False, server_default="UTC")
+
+    # Relationships
+    users = relationship("User", back_populates="city", cascade="all, delete-orphan")
+
+    def __repr__(self):
+        return f"<City(id={self.id}, city='{self.city}', country='{self.country}')>"
 
 
-class DjangoContentType(Base):
-    __tablename__ = 'django_content_type'
-    __table_args__ = (
-        PrimaryKeyConstraint('id', name='django_content_type_pkey'),
-        UniqueConstraint('app_label', 'model', name='django_content_type_app_label_model_76bd3d3b_uniq')
+class User(Base):
+    """User model"""
+
+    __tablename__ = "users"
+
+    id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        server_default=func.gen_random_uuid(),
+    )
+    username = Column(String(64))
+    first_name = Column(String(64))
+    last_name = Column(String(64))
+    bio = Column(String(4096))
+    rate = Column(SmallInteger, nullable=True, server_default="0")
+    city_id = Column(Integer, ForeignKey("cities.id", ondelete="CASCADE"))
+    created_at = Column(TIMESTAMP, nullable=False, server_default=func.now())
+    updated_at = Column(
+        TIMESTAMP, nullable=False, server_default=func.now(), onupdate=func.now()
+    )
+    is_active = Column(Boolean, nullable=False, server_default="True")
+
+    # Relationships
+    city = relationship("City", back_populates="users")
+
+    photos = relationship(
+        "UserPhoto", back_populates="user", cascade="all, delete-orphan"
+    )
+    telegram = relationship(
+        "UserTelegram",
+        back_populates="user",
+        uselist=False,
+        cascade="all, delete-orphan",
+    )
+    contacts = relationship(
+        "UserContact", back_populates="user", cascade="all, delete-orphan"
     )
 
-    id: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1, minvalue=1, maxvalue=2147483647, cycle=False, cache=1), primary_key=True)
-    app_label: Mapped[str] = mapped_column(String(100), nullable=False)
-    model: Mapped[str] = mapped_column(String(100), nullable=False)
-
-    auth_permission: Mapped[list['AuthPermission']] = relationship('AuthPermission', back_populates='content_type')
-    django_admin_log: Mapped[list['DjangoAdminLog']] = relationship('DjangoAdminLog', back_populates='content_type')
-
-
-class DjangoMigrations(Base):
-    __tablename__ = 'django_migrations'
-    __table_args__ = (
-        PrimaryKeyConstraint('id', name='django_migrations_pkey'),
+    goals = relationship("Goal", secondary=UserGoal.__table__, back_populates="users")
+    skills = relationship(
+        "Skill", secondary=UserSkill.__table__, back_populates="users"
+    )
+    mentor_skills = relationship(
+        "Skill", secondary=UserMentorSkill.__table__, back_populates="mentor_users"
+    )
+    mentee_skills = relationship(
+        "Skill", secondary=UserMenteeSkill.__table__, back_populates="mentee_users"
     )
 
-    id: Mapped[int] = mapped_column(BigInteger, Identity(start=1, increment=1, minvalue=1, maxvalue=9223372036854775807, cycle=False, cache=1), primary_key=True)
-    app: Mapped[str] = mapped_column(String(255), nullable=False)
-    name: Mapped[str] = mapped_column(String(255), nullable=False)
-    applied: Mapped[datetime.datetime] = mapped_column(DateTime(True), nullable=False)
-
-
-class DjangoSession(Base):
-    __tablename__ = 'django_session'
-    __table_args__ = (
-        PrimaryKeyConstraint('session_key', name='django_session_pkey'),
-        Index('django_session_expire_date_a5c62663', 'expire_date'),
-        Index('django_session_session_key_c0390e0f_like', 'session_key')
+    # Matches
+    match_requests_sent = relationship(
+        "MatchRequest",
+        foreign_keys="MatchRequest.user_id",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+    match_requests_received = relationship(
+        "MatchRequest",
+        foreign_keys="MatchRequest.target_user_id",
+        back_populates="target_user",
+        cascade="all, delete-orphan",
+    )
+    possible_matches_sent = relationship(
+        "PossibleMatch",
+        foreign_keys="PossibleMatch.user_id",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+    matches_initiated = relationship(
+        "Match",
+        foreign_keys="Match.user_id",
+        back_populates="initiator",
+        cascade="all, delete-orphan",
+    )
+    matches_received = relationship(
+        "Match",
+        foreign_keys="Match.target_user_id",
+        back_populates="target_user",
+        cascade="all, delete-orphan",
     )
 
-    session_key: Mapped[str] = mapped_column(String(40), primary_key=True)
-    session_data: Mapped[str] = mapped_column(Text, nullable=False)
-    expire_date: Mapped[datetime.datetime] = mapped_column(DateTime(True), nullable=False)
-
-
-class TestappTag(Base):
-    __tablename__ = 'testapp_tag'
-    __table_args__ = (
-        PrimaryKeyConstraint('id', name='testapp_tag_pkey'),
-        UniqueConstraint('name', name='testapp_tag_name_key'),
-        UniqueConstraint('slug', name='testapp_tag_slug_key'),
-        Index('testapp_tag_name_94769abb_like', 'name'),
-        Index('testapp_tag_slug_c93666de_like', 'slug')
+    # Availability intervals
+    quants = relationship(
+        "TimeQuant", secondary=UserQuant.__table__, back_populates="users"
     )
 
-    id: Mapped[int] = mapped_column(BigInteger, Identity(start=1, increment=1, minvalue=1, maxvalue=9223372036854775807, cycle=False, cache=1), primary_key=True)
-    name: Mapped[str] = mapped_column(String(50), nullable=False)
-    slug: Mapped[str] = mapped_column(String(50), nullable=False)
+    def __repr__(self):
+        return f"<User(id={self.id}, username='{self.username}')>"
 
-    testapp_project_tags: Mapped[list['TestappProjectTags']] = relationship('TestappProjectTags', back_populates='tag')
+    @property
+    def full_name(self):
+        """Get user's full name"""
+        if self.first_name and self.last_name:
+            return f"{self.first_name} {self.last_name}"
+        return self.first_name or self.last_name or self.username
 
 
-class AuthPermission(Base):
-    __tablename__ = 'auth_permission'
-    __table_args__ = (
-        ForeignKeyConstraint(['content_type_id'], ['django_content_type.id'], deferrable=True, initially='DEFERRED', name='auth_permission_content_type_id_2f476e4b_fk_django_co'),
-        PrimaryKeyConstraint('id', name='auth_permission_pkey'),
-        UniqueConstraint('content_type_id', 'codename', name='auth_permission_content_type_id_codename_01ab375a_uniq'),
-        Index('auth_permission_content_type_id_2f476e4b', 'content_type_id')
+class PossibleMatchStatus(StrEnum):
+    CURRENT = "CURRENT"
+    LAST = "LAST"
+    NEXT = "NEXT"
+
+
+class PossibleMatch(Base):
+    """Possible matches"""
+
+    __tablename__ = "possible_matches"
+    id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        server_default=func.gen_random_uuid(),
+    )
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"))
+    target_user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"))
+    score = Column(Float, nullable=False)
+    created_at = Column(TIMESTAMP, nullable=False, server_default=func.now())
+    status = Column(
+        Enum(PossibleMatchStatus),
+        nullable=False,
+        server_default=PossibleMatchStatus.CURRENT,
     )
 
-    id: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1, minvalue=1, maxvalue=2147483647, cycle=False, cache=1), primary_key=True)
-    name: Mapped[str] = mapped_column(String(255), nullable=False)
-    content_type_id: Mapped[int] = mapped_column(Integer, nullable=False)
-    codename: Mapped[str] = mapped_column(String(100), nullable=False)
-
-    content_type: Mapped['DjangoContentType'] = relationship('DjangoContentType', back_populates='auth_permission')
-    auth_group_permissions: Mapped[list['AuthGroupPermissions']] = relationship('AuthGroupPermissions', back_populates='permission')
-    auth_user_user_permissions: Mapped[list['AuthUserUserPermissions']] = relationship('AuthUserUserPermissions', back_populates='permission')
+    user = relationship("User", foreign_keys=[user_id])
+    target_user = relationship("User", foreign_keys=[target_user_id])
 
 
-class AuthUserGroups(Base):
-    __tablename__ = 'auth_user_groups'
-    __table_args__ = (
-        ForeignKeyConstraint(['group_id'], ['auth_group.id'], deferrable=True, initially='DEFERRED', name='auth_user_groups_group_id_97559544_fk_auth_group_id'),
-        ForeignKeyConstraint(['user_id'], ['auth_user.id'], deferrable=True, initially='DEFERRED', name='auth_user_groups_user_id_6a12ed8b_fk_auth_user_id'),
-        PrimaryKeyConstraint('id', name='auth_user_groups_pkey'),
-        UniqueConstraint('user_id', 'group_id', name='auth_user_groups_user_id_group_id_94350c0c_uniq'),
-        Index('auth_user_groups_group_id_97559544', 'group_id'),
-        Index('auth_user_groups_user_id_6a12ed8b', 'user_id')
+class MatchRequestStatus(StrEnum):
+    PENDING = "PENDING"
+    APPROVED = "APPROVED"
+    REJECTED = "REJECTED"
+
+
+class MatchRequest(Base):
+    """User contact requests"""
+
+    __tablename__ = "match_requests"
+    id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        server_default=func.gen_random_uuid(),
+    )
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"))
+    target_user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"))
+    created_at = Column(TIMESTAMP, nullable=False, server_default=func.now())
+
+    user = relationship("User", foreign_keys=[user_id])
+    target_user = relationship("User", foreign_keys=[target_user_id])
+    status = Column(
+        Enum(MatchRequestStatus), server_default=MatchRequestStatus.PENDING
+    )  # PENDING/APPROVED/REJECTED
+
+
+class UserPhoto(Base):
+    """User photos (telegram URL or S3 key)"""
+
+    __tablename__ = "user_photos"
+    id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        server_default=func.gen_random_uuid(),
     )
 
-    id: Mapped[int] = mapped_column(BigInteger, Identity(start=1, increment=1, minvalue=1, maxvalue=9223372036854775807, cycle=False, cache=1), primary_key=True)
-    user_id: Mapped[int] = mapped_column(Integer, nullable=False)
-    group_id: Mapped[int] = mapped_column(Integer, nullable=False)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"))
+    photo_type = Column(String(20))  # icon/preview/big_picture
+    photo_url = Column(String(256))  # photo url from telegram
+    photo_s3_key = Column(String(128))  # photo s3 in s3 bucket
 
-    group: Mapped['AuthGroup'] = relationship('AuthGroup', back_populates='auth_user_groups')
-    user: Mapped['AuthUser'] = relationship('AuthUser', back_populates='auth_user_groups')
+    # Relationships
+    user = relationship("User", back_populates="photos")
 
-
-class DjangoAdminLog(Base):
-    __tablename__ = 'django_admin_log'
     __table_args__ = (
-        CheckConstraint('action_flag >= 0', name='django_admin_log_action_flag_check'),
-        ForeignKeyConstraint(['content_type_id'], ['django_content_type.id'], deferrable=True, initially='DEFERRED', name='django_admin_log_content_type_id_c4bce8eb_fk_django_co'),
-        ForeignKeyConstraint(['user_id'], ['auth_user.id'], deferrable=True, initially='DEFERRED', name='django_admin_log_user_id_c564eba6_fk_auth_user_id'),
-        PrimaryKeyConstraint('id', name='django_admin_log_pkey'),
-        Index('django_admin_log_content_type_id_c4bce8eb', 'content_type_id'),
-        Index('django_admin_log_user_id_c564eba6', 'user_id')
+        UniqueConstraint("user_id", "photo_type", name="uq_user_photo_type"),
     )
 
-    id: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1, minvalue=1, maxvalue=2147483647, cycle=False, cache=1), primary_key=True)
-    action_time: Mapped[datetime.datetime] = mapped_column(DateTime(True), nullable=False)
-    object_repr: Mapped[str] = mapped_column(String(200), nullable=False)
-    action_flag: Mapped[int] = mapped_column(SmallInteger, nullable=False)
-    change_message: Mapped[str] = mapped_column(Text, nullable=False)
-    user_id: Mapped[int] = mapped_column(Integer, nullable=False)
-    object_id: Mapped[Optional[str]] = mapped_column(Text)
-    content_type_id: Mapped[Optional[int]] = mapped_column(Integer)
-
-    content_type: Mapped[Optional['DjangoContentType']] = relationship('DjangoContentType', back_populates='django_admin_log')
-    user: Mapped['AuthUser'] = relationship('AuthUser', back_populates='django_admin_log')
+    def __repr__(self):
+        return f"<UserPhoto(user_id={self.user_id}, type='{self.photo_type}')>"
 
 
-class TestappProject(Base):
-    __tablename__ = 'testapp_project'
-    __table_args__ = (
-        ForeignKeyConstraint(['owner_id'], ['auth_user.id'], deferrable=True, initially='DEFERRED', name='testapp_project_owner_id_8fc807c2_fk_auth_user_id'),
-        PrimaryKeyConstraint('id', name='testapp_project_pkey'),
-        Index('testapp_project_owner_id_8fc807c2', 'owner_id')
+class UserTelegram(Base):
+    """User Telegram information"""
+
+    __tablename__ = "user_telegram"
+
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"))
+    telegram_id = Column(Integer, primary_key=True)
+    telegram_username = Column(String(64), nullable=False)
+
+    # Relationships
+    user = relationship("User", back_populates="telegram")
+
+    def __repr__(self):
+        return f"<UserTelegram(user_id={self.user_id}, username='{self.telegram_username}')>"
+
+
+class UserContact(Base):
+    """User contact information"""
+
+    __tablename__ = "user_contacts"
+
+    user_id = Column(
+        UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), primary_key=True
+    )
+    value = Column(String(100), nullable=False)
+    contact_type = Column(String(10), primary_key=True)
+
+    # Relationships
+    user = relationship("User", back_populates="contacts")
+
+    __table_args__ = (UniqueConstraint("value", name="uq_contact_value"),)
+
+    def __repr__(self):
+        return f"<UserContact(user_id={self.user_id}, type='{self.contact_type}', value='{self.value}')>"
+
+
+class Category(Base):
+    """Categories for skills and interests"""
+
+    __tablename__ = "categories"
+
+    id = Column(
+        Integer,
+        primary_key=True,
+    )
+    name = Column(String(100), unique=True, nullable=False)
+    weight = Column(Float, nullable=False, default=0)
+
+    # Relationships
+    skills = relationship(
+        "Skill", back_populates="category", cascade="all, delete-orphan"
     )
 
-    id: Mapped[int] = mapped_column(BigInteger, Identity(start=1, increment=1, minvalue=1, maxvalue=9223372036854775807, cycle=False, cache=1), primary_key=True)
-    title: Mapped[str] = mapped_column(String(250), nullable=False)
-    description: Mapped[str] = mapped_column(Text, nullable=False)
-    owner_id: Mapped[int] = mapped_column(Integer, nullable=False)
-    created_at: Mapped[datetime.datetime] = mapped_column(DateTime(True), nullable=False)
-    updated_at: Mapped[datetime.datetime] = mapped_column(DateTime(True), nullable=False)
-
-    owner: Mapped['AuthUser'] = relationship('AuthUser', back_populates='testapp_project')
-    testapp_comment: Mapped[list['TestappComment']] = relationship('TestappComment', back_populates='project')
-    testapp_project_tags: Mapped[list['TestappProjectTags']] = relationship('TestappProjectTags', back_populates='project')
+    def __repr__(self):
+        return f"<Category(id={self.id}, name='{self.name}')>"
 
 
-class AuthGroupPermissions(Base):
-    __tablename__ = 'auth_group_permissions'
-    __table_args__ = (
-        ForeignKeyConstraint(['group_id'], ['auth_group.id'], deferrable=True, initially='DEFERRED', name='auth_group_permissions_group_id_b120cbf9_fk_auth_group_id'),
-        ForeignKeyConstraint(['permission_id'], ['auth_permission.id'], deferrable=True, initially='DEFERRED', name='auth_group_permissio_permission_id_84c5c92e_fk_auth_perm'),
-        PrimaryKeyConstraint('id', name='auth_group_permissions_pkey'),
-        UniqueConstraint('group_id', 'permission_id', name='auth_group_permissions_group_id_permission_id_0cd325b0_uniq'),
-        Index('auth_group_permissions_group_id_b120cbf9', 'group_id'),
-        Index('auth_group_permissions_permission_id_84c5c92e', 'permission_id')
+class Goal(Base):
+    """User goals"""
+
+    __tablename__ = "goals"
+
+    id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        server_default=func.gen_random_uuid(),
+    )
+    name = Column(String(100), unique=True, nullable=False)
+
+    # Relationships
+    users = relationship("User", secondary=UserGoal.__table__, back_populates="goals")
+
+    def __repr__(self):
+        return f"<Goal(id={self.id}, name='{self.name}')>"
+
+
+class Skill(Base):
+    """Skills"""
+
+    __tablename__ = "skills"
+
+    id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        server_default=func.gen_random_uuid(),
+    )
+    name = Column(String(100), unique=True, nullable=False)
+    weight = Column(Float, nullable=True, default=1)
+    category_id = Column(Integer, ForeignKey("categories.id", ondelete="CASCADE"))
+
+    # Relationships
+    category = relationship("Category", back_populates="skills")
+    users = relationship("User", secondary=UserSkill.__table__, back_populates="skills")
+    mentor_users = relationship(
+        "User", secondary=UserMentorSkill.__table__, back_populates="mentor_skills"
+    )
+    mentee_users = relationship(
+        "User", secondary=UserMenteeSkill.__table__, back_populates="mentee_skills"
     )
 
-    id: Mapped[int] = mapped_column(BigInteger, Identity(start=1, increment=1, minvalue=1, maxvalue=9223372036854775807, cycle=False, cache=1), primary_key=True)
-    group_id: Mapped[int] = mapped_column(Integer, nullable=False)
-    permission_id: Mapped[int] = mapped_column(Integer, nullable=False)
-
-    group: Mapped['AuthGroup'] = relationship('AuthGroup', back_populates='auth_group_permissions')
-    permission: Mapped['AuthPermission'] = relationship('AuthPermission', back_populates='auth_group_permissions')
+    def __repr__(self):
+        return f"<Skill(id={self.id}, name='{self.name}', weight={self.weight})>"
 
 
-class AuthUserUserPermissions(Base):
-    __tablename__ = 'auth_user_user_permissions'
+class MatchStatus(StrEnum):
+    FOLLOWING = "FOLLOWING"  # Pre-screening to the next after the current meeting
+    UNCOMPLETED = "UNCOMPLETED"
+    CANCELED_BY_INITIATOR = "CANCELED_BY_INITIATOR"
+    CANCELED_BY_TARGET = "CANCELED_BY_TARGET"
+    COMPLETED = "COMPLETED"
+    SKIPPED = "SKIPPED"
+
+
+class Match(Base):
+    """Matches between users"""
+
+    __tablename__ = "matches"
+
+    id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        server_default=func.gen_random_uuid(),
+    )
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"))
+    target_user_id = Column(
+        UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE")
+    )
+    date_at = Column(TIMESTAMP, nullable=False, server_default=func.now())
+    status = Column(
+        Enum(MatchStatus), server_default=MatchStatus.UNCOMPLETED
+    )  # UNCOMPLETED / CANCELED_BY_INITIATOR / CANCELED_BY_TARGET / COMPLETED / SKIPPED
+    rate = Column(SmallInteger, nullable=True, server_default="0")  # -100 0-100
+
+    # Rating given by initiator to target user
+    # Unique constraint
     __table_args__ = (
-        ForeignKeyConstraint(['permission_id'], ['auth_permission.id'], deferrable=True, initially='DEFERRED', name='auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm'),
-        ForeignKeyConstraint(['user_id'], ['auth_user.id'], deferrable=True, initially='DEFERRED', name='auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id'),
-        PrimaryKeyConstraint('id', name='auth_user_user_permissions_pkey'),
-        UniqueConstraint('user_id', 'permission_id', name='auth_user_user_permissions_user_id_permission_id_14a6b632_uniq'),
-        Index('auth_user_user_permissions_permission_id_1fbb5f2c', 'permission_id'),
-        Index('auth_user_user_permissions_user_id_a95ead1b', 'user_id')
+        UniqueConstraint(
+            "user_id", "target_user_id", "date_at", name="unique_user_target_date"
+        ),
     )
 
-    id: Mapped[int] = mapped_column(BigInteger, Identity(start=1, increment=1, minvalue=1, maxvalue=9223372036854775807, cycle=False, cache=1), primary_key=True)
-    user_id: Mapped[int] = mapped_column(Integer, nullable=False)
-    permission_id: Mapped[int] = mapped_column(Integer, nullable=False)
-
-    permission: Mapped['AuthPermission'] = relationship('AuthPermission', back_populates='auth_user_user_permissions')
-    user: Mapped['AuthUser'] = relationship('AuthUser', back_populates='auth_user_user_permissions')
-
-
-class TestappComment(Base):
-    __tablename__ = 'testapp_comment'
-    __table_args__ = (
-        ForeignKeyConstraint(['owner_id'], ['auth_user.id'], deferrable=True, initially='DEFERRED', name='testapp_comments_owner_id_d168cad4_fk_auth_user_id'),
-        ForeignKeyConstraint(['project_id'], ['testapp_project.id'], deferrable=True, initially='DEFERRED', name='testapp_comment_project_id_651cd9f5_fk_testapp_project_id'),
-        PrimaryKeyConstraint('id', name='testapp_comments_pkey'),
-        Index('testapp_comments_owner_id_d168cad4', 'owner_id'),
-        Index('testapp_comments_project_id_840a640e', 'project_id')
+    # Relationships
+    initiator = relationship(
+        "User", foreign_keys=[user_id], back_populates="matches_initiated"
+    )
+    target_user = relationship(
+        "User", foreign_keys=[target_user_id], back_populates="matches_received"
     )
 
-    id: Mapped[int] = mapped_column(BigInteger, Identity(start=1, increment=1, minvalue=1, maxvalue=9223372036854775807, cycle=False, cache=1), primary_key=True)
-    title: Mapped[str] = mapped_column(String(250), nullable=False)
-    description: Mapped[str] = mapped_column(Text, nullable=False)
-    owner_id: Mapped[int] = mapped_column(Integer, nullable=False)
-    project_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
-    created_at: Mapped[datetime.datetime] = mapped_column(DateTime(True), nullable=False)
-    updated_at: Mapped[datetime.datetime] = mapped_column(DateTime(True), nullable=False)
-    parent_id: Mapped[int] = mapped_column(Integer, nullable=False)
-
-    owner: Mapped['AuthUser'] = relationship('AuthUser', back_populates='testapp_comment')
-    project: Mapped['TestappProject'] = relationship('TestappProject', back_populates='testapp_comment')
+    def __repr__(self):
+        return f"<Match(id={self.id}, user_id={self.user_id}, target_user_id={self.target_user_id}, status='{self.status}')>"
 
 
-class TestappProjectTags(Base):
-    __tablename__ = 'testapp_project_tags'
-    __table_args__ = (
-        ForeignKeyConstraint(['project_id'], ['testapp_project.id'], deferrable=True, initially='DEFERRED', name='testapp_project_tags_project_id_2284660d_fk_testapp_project_id'),
-        ForeignKeyConstraint(['tag_id'], ['testapp_tag.id'], deferrable=True, initially='DEFERRED', name='testapp_project_tags_tag_id_629c17f8_fk_testapp_tag_id'),
-        PrimaryKeyConstraint('id', name='testapp_project_tags_pkey'),
-        UniqueConstraint('project_id', 'tag_id', name='testapp_project_tags_project_id_tag_id_d6d041bc_uniq'),
-        Index('testapp_project_tags_project_id_2284660d', 'project_id'),
-        Index('testapp_project_tags_tag_id_629c17f8', 'tag_id')
-    )
+class TimeQuant(Base):
+    """Time quantums for scheduling (7 days * 24 hours = 168 slots)"""
 
-    id: Mapped[int] = mapped_column(BigInteger, Identity(start=1, increment=1, minvalue=1, maxvalue=9223372036854775807, cycle=False, cache=1), primary_key=True)
-    project_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
-    tag_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    __tablename__ = "time_quants"
 
-    project: Mapped['TestappProject'] = relationship('TestappProject', back_populates='testapp_project_tags')
-    tag: Mapped['TestappTag'] = relationship('TestappTag', back_populates='testapp_project_tags')
+    id = Column(SmallInteger, primary_key=True)
+    hour = Column(SmallInteger, nullable=False)  # 0-23
+    day = Column(SmallInteger, nullable=False)  # 0-6
+
+    # Relationships
+    users = relationship("User", secondary=UserQuant.__table__, back_populates="quants")
+
+    def __repr__(self):
+        return f"<TimeQuant(id={self.id}, day={self.day}, hour={self.hour})>"
+
+    @property
+    def time_slot(self):
+        """Get human-readable time slot"""
+        hour_map = {
+            0: "00:00-01:00",
+            1: "01:00-02:00",
+            2: "02:00-03:00",
+            3: "03:00-04:00",
+            4: "04:00-05:00",
+            5: "05:00-06:00",
+            6: "06:00-07:00",
+            7: "07:00-08:00",
+            8: "08:00-09:00",
+            9: "09:00-10:00",
+            10: "10:00-11:00",
+            11: "11:00-12:00",
+            12: "12:00-13:00",
+            13: "13:00-14:00",
+            14: "14:00-15:00",
+            15: "15:00-16:00",
+            16: "16:00-17:00",
+            17: "17:00-18:00",
+            18: "18:00-19:00",
+            19: "19:00-20:00",
+            20: "20:00-21:00",
+            21: "21:00-22:00",
+            22: "22:00-23:00",
+            23: "23:00-00:00",
+        }
+        day_map = {
+            0: "Monday",
+            1: "Tuesday",
+            2: "Wednesday",
+            3: "Thursday",
+            4: "Friday",
+            5: "Saturday",
+            6: "Sunday",
+        }
+        return (
+            f"{day_map.get(self.day, 'Unknown')} {hour_map.get(self.hour, 'Unknown')}"
+        )

@@ -23,6 +23,7 @@ extend-exclude = [
     "manage.py",
     "apps/jupyter/jupyter_files",
     "db/models.py",
+    "db/1/models.py",
 ]
 
 [tool.ruff.lint]
