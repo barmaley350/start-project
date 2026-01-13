@@ -104,7 +104,7 @@ help() {
     line2 
     print_text_white "[command] - Персональные команды\n"
     print_text_yellow "g1"
-    print_text_white " \u2501 git checkout main && git merge dev && git push origin main && git checkout dev\n" 
+    print_text_white " \u2501 git checkout main & git merge dev &  git push gitlab dev & git push github dev & git push gitlab main & git push github main\n" 
     print_text_yellow "lbd"
     print_text_white " \u2501 (backend/django) find ./apps -name "*.py" | xargs pipenv run pylint --rcfile=.pylintrc\n" 
     print_text_yellow "lbf"
