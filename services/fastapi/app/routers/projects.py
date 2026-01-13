@@ -3,10 +3,11 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session  # pylint: disable=wrong-import-order
+from sqlalchemy import select
+from sqlalchemy.orm import Session, selectinload  # pylint: disable=wrong-import-order
 
 from app.db.database import get_db
-from app.db.models import TestappProject
+from app.db.models import TestappComment, TestappProject
 from app.db.schemas import ProjectResponse
 
 router = APIRouter(prefix="/api/v1")
@@ -20,7 +21,12 @@ def get_projects(db: Annotated[Session, Depends(get_db)]) -> list[ProjectRespons
     :return: _description_
     :rtype: dict
     """
-    return db.query(TestappProject).limit(100).all()
+    return (
+        db.query(TestappProject)
+        .options(selectinload(TestappProject.testapp_comment))
+        .limit(10)
+        .all()
+    )
 
 
 # http://localhost:1338/fastapi/api/v1/projects/1

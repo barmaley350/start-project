@@ -17,21 +17,3 @@ class ApiProject(HttpUser):
         """
         headers = {}
         self.client.get("/api/v1/project/", headers=headers)
-
-    # @task(5)
-    # def get_projects(self) -> None:
-    #     """Docstring для get_projects.
-
-    #     :param self: Описание
-    #     """
-    #     headers = {}
-    #     self.client.get("/projects/", headers=headers)
-
-    # @task(1)
-    # def get_main(self) -> None:
-    #     """Docstring для get_main.
-
-    #     :param self: Описание
-    #     """
-    #     headers = {}
-    #     self.client.get("/", headers=headers)
