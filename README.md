@@ -48,6 +48,21 @@ cd ./services/drf/
 ```
 pipenv run locust -f ./tests/external/locust.py --host http://localhost:1338 --headless -u 30 -r 5 -t 1m --html=./tests/external/report.html
 ```
+| Type | Name             | # Requests | # Fails | Average (ms) | Min (ms) | Max (ms) | Average size (bytes) | RPS   | Failures/s |
+|------|------------------|------------|---------|--------------|----------|----------|----------------------|-------|------------|
+| GET  | /                | 70         | 0       | 25.32        | 15       | 92       | 26317                | 1.17  | 0          |
+| GET  | /api/v1/project/ | 352        | 0       | 215.03       | 66       | 681      | 61664                | 5.88  | 0          |
+| GET  | /projects/       | 366        | 0       | 255.81       | 102      | 780      | 110154               | 6.12  | 0          |
+|      | Aggregated       | 788        | 0       | 217.12       | 15       | 780      | 81046.04             | 13.17 | 0          |
+
+
+| Method | Name             | 50%ile (ms) | 60%ile (ms) | 70%ile (ms) | 80%ile (ms) | 90%ile (ms) | 95%ile (ms) | 99%ile (ms) | 100%ile (ms) |
+|--------|------------------|-------------|-------------|-------------|-------------|-------------|-------------|-------------|--------------|
+| GET    | /                | 21          | 22          | 24          | 33          | 48          | 50          | 92          | 92           |
+| GET    | /api/v1/project/ | 190         | 230         | 270         | 320         | 410         | 470         | 550         | 680          |
+| GET    | /projects/       | 230         | 270         | 310         | 350         | 430         | 540         | 720         | 780          |
+|        | Aggregated       | 190         | 230         | 280         | 320         | 410         | 480         | 660         | 780          |
+
 ![img_1](files/img/locust/django/tests.png)
 Сохраните файл локально и откройте в браузере
 [django api / Нагрузочные тесты](./services/drf/tests/external/report.html)
