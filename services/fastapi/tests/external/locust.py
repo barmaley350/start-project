@@ -1,4 +1,4 @@
-"""Docstring для services.drf.tests.external.locust."""
+"""Docstring для services.fastapi.tests.external.locust."""
 
 from locust import HttpUser, between, task
 
@@ -16,7 +16,7 @@ class ApiProject(HttpUser):
         :param self: Описание
         """
         headers = {}
-        self.client.get("/api/v1/project/", headers=headers)
+        self.client.get("/fastapi/api/v1/projects", headers=headers)
 
     # @task(5)
     # def get_projects(self) -> None:

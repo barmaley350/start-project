@@ -20,7 +20,7 @@ def get_projects(db: Annotated[Session, Depends(get_db)]) -> list[ProjectRespons
     :return: _description_
     :rtype: dict
     """
-    return db.query(TestappProject).all()
+    return db.query(TestappProject).limit(100).all()
 
 
 # http://localhost:1338/fastapi/api/v1/projects/1
