@@ -1,19 +1,27 @@
 """Docstring для services.fastapi.app.routers.projects."""
 
-from fastapi import APIRouter
+from typing import Annotated
+
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+
+from app.db.database import get_db
+from app.db.models import TestappProject
+from app.db.schemas import ProjectResponse
 
 router = APIRouter(prefix="/api/v1")
 
 
 # http://localhost:1338/fastapi/api/v1/projects
-@router.get("/projects")
-def get_projects() -> dict:
+@router.get("/projects", response_model=list[ProjectResponse])  # noqa: FAST001
+def get_projects(db: Annotated[Session, Depends(get_db)]) -> list[ProjectResponse]:
     """_summary_.
 
     :return: _description_
     :rtype: dict
     """
-    return {"message": "Hello from FastAPI in Docker!"}
+    return db.query(TestappProject).all()
+
 
 
 # http://localhost:1338/fastapi/api/v1/projects/1
