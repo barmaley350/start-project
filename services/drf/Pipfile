@@ -27,6 +27,7 @@ pytest-django = "*"
 coverage = "*"
 pyparsing = "*"
 pydot = "*"
+locust = "*"
 
 [requires]
 python_version = "3.12"

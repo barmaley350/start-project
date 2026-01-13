@@ -17,6 +17,7 @@ python-dotenv = "*"
 [dev-packages]
 eralchemy = "*"
 graphviz = "*"
+locust = "*"
 
 [requires]
 python_version = "3.12"
