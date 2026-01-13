@@ -12,10 +12,11 @@ sqlalchemy = "*"
 psycopg2-binary = "*"
 ruff = "*"
 pylint = "*"
-eralchemy = "*"
-graphviz = "*"
+python-dotenv = "*"
 
 [dev-packages]
+eralchemy = "*"
+graphviz = "*"
 
 [requires]
 python_version = "3.12"
