@@ -48,6 +48,8 @@ cd ./services/drf/
 ```
 pipenv run locust -f ./tests/external/locust.py --host http://localhost:1338 --headless -u 30 -r 5 -t 1m --html=./tests/external/report.html
 ```
+![img_1](files/img/locust/django/tests.png)
+Сохраните файл локально и откройте в браузере
 [django api / Нагрузочные тесты](./services/drf/tests/external/report.html)
 
 # Доступные сервисы  
