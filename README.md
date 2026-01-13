@@ -48,9 +48,15 @@ cd ./services/drf/
 ```
 pipenv run locust -f ./tests/external/locust.py --host http://localhost:1338 --headless -u 30 -r 5 -t 5m --html=./tests/external/report.html
 ```
+Для 30-ти одновременных пользователей
 ![img_1](files/img/locust/django/tests.png)
 Сохраните файл локально и откройте в браузере
-[django api / Нагрузочные тесты](./services/drf/tests/external/report.html)
+
+[Нагрузочные тесты - 20 users](./services/drf/tests/external/report_20_users.html)
+
+[Нагрузочные тесты - 30 users](./services/drf/tests/external/report_30_users.html)
+
+[Нагрузочные тесты - 50 users](./services/drf/tests/external/report_50_users.html)
 
 # Доступные сервисы  
 
