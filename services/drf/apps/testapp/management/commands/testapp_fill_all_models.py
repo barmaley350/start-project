@@ -88,7 +88,7 @@ class Command(BaseCommand):
         """Docstring для output_process."""
         print(idx, end="\r")  # noqa: T201
 
-    def filling_project_models(self, **options: dict[str:Any]) -> None:
+    def filling_project_models(self, **options: dict[str:Any]) -> None:  # pylint: disable=too-many-locals
         """Заполнение моделей данными.
 
         :return: _description_
@@ -122,7 +122,7 @@ class Command(BaseCommand):
         max_tags = 6
 
         self.output_text(
-            f"""Создаем коментарии. Min = {count * min_comments}, Max = {count * max_comments}. Ожидайте...""",  # noqa: E501
+            f"""Создаем коментарии. Min = {count * min_comments}, Max = {count * max_comments}. Ожидайте...""",  # noqa: E501 pylint: disable=line-too-long
             "notice",
         )
         all_comments = []
@@ -144,7 +144,7 @@ class Command(BaseCommand):
             ]
             all_comments.extend(comments_for_project)
             self.output_process(
-                f"\t Обработано {idx + 1} проектов из {count}. Создано коментариев {count_comments}"  # noqa: E501
+                f"\t Обработано {idx + 1} проектов из {count}. Создано коментариев {count_comments}"  # noqa: E501 pylint: disable=line-too-long
             )
 
         Comment.objects.bulk_create(all_comments)

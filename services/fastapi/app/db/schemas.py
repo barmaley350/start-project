@@ -17,7 +17,7 @@ class ProjectResponse(BaseModel):
     description: str | None = None
     created_at: datetime
 
-    class Config:
+    class Config: # pylint: disable=too-few-public-methods
         """Docstring для Config."""
 
         from_attributes = True  # вместо устаревшего orm_mode
