@@ -43,15 +43,16 @@
 
 # Нагрузочные тесты
 
-```
-cd ./services/fastapi/
-```
-```
-pipenv run locust -f ./tests/external/locust.py --host http://localhost:1338 --headless -u 100 -r 20 -t 5m --html=./tests/external/report.html
-```
+| Django drf | Fastapi |
+| - | - |
+| Сохраните [файл с тестами](./services/drf/tests/external/report.html) локально и откройте в браузере | Сохраните [файл с тестами](./services/fastapi/tests/external/report.html) локально и откройте в браузере |
+| ![img_1](files/img/locust/django/tests.png) | ![img_1](files/img/locust/fastapi/tests.png)|
+| `cd ./services/drf/` | `cd ./services/fastapi/` |
 
-![img_1](files/img/locust/fastapi/tests.png)
-Сохраните [файл с тестами](./services/fastapi/tests/external/report.html) локально и откройте в браузере
+
+```
+pipenv run locust -f ./tests/external/locust.py --host http://localhost:1338 --headless -u 100 -r 10 -t 5m --html=./tests/external/report.html
+```
 
 # Доступные сервисы  
 
