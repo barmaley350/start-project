@@ -6,6 +6,7 @@ from locust import HttpUser, between, task
 class ApiProject(HttpUser):
     """Docstring для ApiProject."""
 
+    host = "http://localhost:1338"
     # Время ожидания между запросами (в секундах)
     wait_time = between(1, 3)
 

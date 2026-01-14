@@ -51,7 +51,7 @@
 
 
 ```
-pipenv run locust -f ./tests/external/locust.py --host http://localhost:1338 --headless -u 100 -r 10 -t 5m --html=./tests/external/report.html
+pipenv run locust -f ./tests/external/locust.py --headless -u 100 -r 10 -t 1m --html=./tests/external/report.html
 ```
 
 # Доступные сервисы  
