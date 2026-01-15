@@ -1,7 +1,7 @@
 [project]
-name = "Empty dummy project"
+name = "DjangoDRF_API"
 version = "0.1.0"
-description = "Empty dummy project"
+description = "Django/DRF API"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
