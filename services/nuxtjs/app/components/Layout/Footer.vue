@@ -28,7 +28,7 @@ const menus = {
     {
         title: "Title 3",
         urls: [
-            { title: "© 2026 Coffee & Code", url: "" },
+            { title: "© 2026 barmaley", url: "" },
             { title: "Все права защищены", url: "" },
         ],
     },

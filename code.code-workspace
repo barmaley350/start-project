@@ -8,6 +8,9 @@
 		},
 		{
 			"path": "services/fastapi"
+		},
+		{
+			"path": "services/nuxtjs"
 		}
 	],
 	"settings": {
