@@ -5,10 +5,23 @@ description = "FastAPI API"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "fastapi>=0.128.0",
+    "psycopg2-binary>=2.9.11",
+    "pydantic>=2.12.5",
+    "pylint>=4.0.4",
+    "python-dotenv>=1.2.1",
+    "ruff>=0.14.11",
+    "sqlacodegen>=3.2.0",
+    "sqlalchemy>=2.0.45",
+    "uvicorn>=0.40.0",
 ]
 
 [dependency-groups]
-dev = []
+dev = [
+    "eralchemy>=1.6.0",
+    "graphviz>=0.21",
+    "locust>=2.43.1",
+]
 
 [tool.ruff]
 line-length = 88
