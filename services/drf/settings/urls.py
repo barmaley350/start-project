@@ -30,18 +30,18 @@ from drf_spectacular.views import (
 admin.site.site_header = "Тестовый проект"
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("auth-check/", include("apps.auth_check.urls")),
-    path("sphinx/", include("apps.sphinx_docs.urls")),
-    path("api/v1/", include("apps.testapp.urls")),
-    path("django-api-schema/", SpectacularAPIView.as_view(), name="schema"),
+    path("drf/admin/", admin.site.urls),
+    path("drf/auth-check/", include("apps.auth_check.urls")),
+    path("drf/sphinx/", include("apps.sphinx_docs.urls")),
+    path("drf/api/v1/", include("apps.testapp.urls")),
+    path("drf/schema/", SpectacularAPIView.as_view(), name="schema"),
     path(
-        "django-api-swagger/",
+        "drf/swagger/",
         SpectacularSwaggerView.as_view(url_name="schema"),
         name="swagger",
     ),
     path(
-        "django-api-redoc/",
+        "drf/redoc/",
         SpectacularRedocView.as_view(url_name="schema"),
         name="redoc",
     ),
@@ -50,4 +50,4 @@ urlpatterns = [
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    urlpatterns += debug_toolbar_urls()
+    urlpatterns += debug_toolbar_urls(prefix="drf/__debug__")

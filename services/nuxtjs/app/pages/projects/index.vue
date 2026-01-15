@@ -1,7 +1,7 @@
 <script setup>
 const runtimeConfig = useRuntimeConfig()
 const paginationPageNumber = ref(1)
-let url = "baseURL" in runtimeConfig ? runtimeConfig.baseURL + 'project/' : window.location.origin + '/api/v1/project/'
+let url = "baseURL" in runtimeConfig ? runtimeConfig.baseURL + 'project/' : window.location.origin + '/drf/api/v1/project/'
 
 const { data, status, error, pending } = await useFetch(url, {
     query: {

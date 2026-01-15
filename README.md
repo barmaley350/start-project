@@ -66,11 +66,11 @@ uv run locust -f ./tests/external/locust.py --headless -u 100 -r 10 -t 1m --html
 | backend/fastapi/api  | `да` | [http://localhost:1338/fastapi/api/v1/](http://localhost:1338/fastapi/api/v1/)  | api на базе FastApi | 
 | backend/fastapi/api/swagger  | `да` | [http://localhost:1338/fastapi/docs/](http://localhost:1338/fastapi/docs/)  | Документация fastapi/api/swagger | 
 | backend/fastapi/api/redoc  | `да` | [http://localhost:1338/fastapi/redoc/](http://localhost:1338/fastapi/redoc/)  | Документация fastapi/api/redoc | 
-| backend/drf/api | `да` | [http://localhost:1338/api/v1/](http://localhost:1338/api/v1/)  | api на базе DRF |
-| backend/django/admin | `да` | [http://localhost:1338/admin/](http://localhost:1338/admin/)  | Django Admin Panel |
-| backend/sphinx  | `да` | [http://localhost:1338/docs/](http://localhost:1338/docs/)  | Документация к django моделям | 
-| django/api/swagger  | `да` | [http://localhost:1338/django-api-swagger/](http://localhost:1338/django-api-swagger/)  | Документация к django/api/swagger | 
-| django/api/redoc  | `да` | [http://localhost:1338/django-api-redoc/](http://localhost:1338/django-api-redoc/)  | Документация к django/api/redoc | 
+| backend/drf/api | `да` | [http://localhost:1338/drf/api/v1/](http://localhost:1338/drf/api/v1/)  | api на базе DRF |
+| backend/django/admin | `да` | [http://localhost:1338/drf/admin/](http://localhost:1338/drf/admin/)  | Django Admin Panel |
+| backend/sphinx  | `да` | [http://localhost:1338/drf/sphinx/](http://localhost:1338/drf/sphinx/)  | Документация к django моделям | 
+| django/api/swagger  | `да` | [http://localhost:1338/drf/swagger/](http://localhost:1338/drf/swagger/)  | Документация к django/api/swagger | 
+| django/api/redoc  | `да` | [http://localhost:1338/drf/redoc/](http://localhost:1338/drf/redoc/)  | Документация к django/api/redoc | 
 | db/adminer | `да` | [http://localhost:1338/adminer/](http://localhost:1338/adminer/)  | Web интерфейс для работы с DB |
 | jupyter | `да` | [http://localhost:1338/jupyter/](http://localhost:1338/jupyter/)  | JupyterLab для DS |
 
