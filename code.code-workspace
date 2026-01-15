@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "services/drf"
+		},
+		{
+			"path": "services/fastapi"
+		}
+	],
+	"settings": {
+		"python.terminal.activateEnvironment": true
+	}
+}
