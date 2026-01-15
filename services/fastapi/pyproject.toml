@@ -1,11 +1,14 @@
 [project]
-name = "Empty dummy project"
+name = "FastAPI_API"
 version = "0.1.0"
-description = "Empty dummy project"
+description = "FastAPI API"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
 ]
+
+[dependency-groups]
+dev = []
 
 [tool.ruff]
 line-length = 88
