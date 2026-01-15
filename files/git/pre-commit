@@ -17,7 +17,7 @@ RUFF_FORMAT_DIFF="--diff"
 cd $PATH_TO_BACKEND
 
 # ruff check
-pipenv run ruff check $RUFF_CHECK_FIX
+uv run ruff check $RUFF_CHECK_FIX
 
 RUFF_CHECK_EXIT_CODE=$?
 if [ $RUFF_CHECK_EXIT_CODE -eq 2 ]; then
@@ -25,7 +25,7 @@ if [ $RUFF_CHECK_EXIT_CODE -eq 2 ]; then
 fi
 
 # ruff format
-pipenv run ruff format $RUFF_FORMAT_CHECK $RUFF_FORMAT_DIFF
+uv run ruff format $RUFF_FORMAT_CHECK $RUFF_FORMAT_DIFF
 
 RUFF_FORMAT_EXIT_CODE=$?
 if [ $RUFF_FORMAT_EXIT_CODE -ne 0 ]; then

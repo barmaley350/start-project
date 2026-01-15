@@ -48,8 +48,8 @@ print_text_block() {
 # Generate sphinx docs for backend/django
 generate_sphinx_docs() {
     cd $BASE_DIR$PATH_TO_BACKEND_DOCS
-    pipenv run make clean
-    pipenv run make html
+    uv run make clean
+    uv run make html
 
     if [ $? -ne 0 ]; then
         print_text_block error "Ошибка при создании документации Sphinx"  
@@ -64,9 +64,9 @@ generate_sphinx_docs() {
 # Generate sphinx docs for backend/django
 generate_graph_models() {
     cd $BASE_DIR$PATH_TO_BACKEND
-    pipenv run python3 manage.py graph_models testapp -o docs/_static/testapp.png
-    pipenv run python3 manage.py graph_models sphinx_docs -o docs/_static/sphinx_docs.png
-    pipenv run python3 manage.py graph_models -o docs/_static/all.png
+    uv run python3 manage.py graph_models testapp -o docs/_static/testapp.png
+    uv run python3 manage.py graph_models sphinx_docs -o docs/_static/sphinx_docs.png
+    uv run python3 manage.py graph_models -o docs/_static/all.png
 
     if [ $? -ne 0 ]; then
         print_text_block error "Генерация картинки структуры DB...Error "
@@ -81,7 +81,7 @@ generate_graph_models() {
 start_ruff_check() {
     cd $BASE_DIR$PATH_TO_BACKEND
 
-    pipenv run ruff check --fix
+    uv run ruff check --fix
 
     if [ $? -ne 0 ]; then
         print_text_block error "ruff check...Error "
@@ -93,7 +93,7 @@ start_ruff_check() {
 
 start_ruff_format() {
     # Ruff formater backend/django
-    pipenv run ruff format
+    uv run ruff format
 
     if [ $? -ne 0 ]; then
         print_text_block error "ruff format...Error "
@@ -105,7 +105,7 @@ start_ruff_format() {
 
 start_tests() {
     # pytest backend/django
-    docker exec -it ${PROJECT_NAME}-service.drf-1 pipenv run pytest
+    docker exec -it ${PROJECT_NAME}-service.drf-1 uv run pytest
 
     if [ $? -ne 0 ]; then
         print_text_block error "pytest...Error "

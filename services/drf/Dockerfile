@@ -10,16 +10,19 @@ ENV APP_ROOT=/app
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Переменная окружения для pipenv
-# Указывает pipenv, что надо использовать эту директорию для
+# Переменная окружения для uv
+# Указывает uv, что надо использовать эту директорию для
 # сохранения файлов виртуального окружения
-ENV WORKON_HOME=/venv
+
+# Для старого pipenv
+# ENV WORKON_HOME=/venv
+ENV UV_PROJECT_ENVIRONMENT=/venv
 
 RUN apt-get update && apt-get install -y --no-install-recommends bash postgresql-client
 
-# Обновление pip и установка pipenv
+# Обновление pip и установка uv
 RUN pip install --upgrade pip --no-cache-dir
-RUN pip install pipenv --no-cache-dir
+RUN pip install uv --no-cache-dir
 
 
 # Промежуточный образ для сборки
@@ -28,20 +31,24 @@ FROM base AS build
 
 WORKDIR ${APP_ROOT}
 
-COPY ./services/drf/Pipfile ${APP_ROOT}
-COPY ./services/drf/Pipfile.lock ${APP_ROOT}
+# COPY ./services/drf/Pipfile ${APP_ROOT}
+# COPY ./services/drf/Pipfile.lock ${APP_ROOT}
 
-RUN pipenv sync --dev
-RUN pipenv --clear
+COPY ./services/drf/pyproject.toml ${APP_ROOT}
+COPY ./services/drf/uv.lock ${APP_ROOT}
+
+RUN uv sync --dev
+RUN uv cache clean
 
 
 # Итоговый образ
 FROM base
 
-COPY --from=build ${WORKON_HOME} ${WORKON_HOME}
+# COPY --from=build ${WORKON_HOME} ${WORKON_HOME}
+COPY --from=build ${UV_PROJECT_ENVIRONMENT} ${UV_PROJECT_ENVIRONMENT}
 WORKDIR ${APP_ROOT}
 
 # Для продакшн
 # COPY ./backend ${APP_ROOT}
 
-# RUN pipenv run gunicorn 'hh.wsgi' --bind=0.0.0.0:8000
+# RUN uv run gunicorn 'hh.wsgi' --bind=0.0.0.0:8000

@@ -22,13 +22,13 @@ NGINX_PORT=1338
 service_print_steps_text() {
     case $1 in
         step1)
-            echo -e "Проверка установленных зависимостей docker, nodejs, npm, pipenv"
+            echo -e "Проверка установленных зависимостей docker, nodejs, npm, uv"
             ;;
         step2)
-            echo -e "Настройка backend/drf (pipenv sync --dev)"
+            echo -e "Настройка backend/drf (uv sync --dev)"
             ;;     
         step3)
-            echo -e "Настройка backend/fastapi (pipenv sync --dev)"
+            echo -e "Настройка backend/fastapi (uv sync --dev)"
             ;;    
         step4)
             echo -e "Настройка frontend/nuxtjs (npm install)"
@@ -194,13 +194,14 @@ step1_check_system_requirements() {
     fi
     line_output2 "npm" "$(print_text_success "OK")"
 
-    if ! command -v pipenv &> /dev/null; then
-        line_output2 "pipenv" "$(print_text_error "Error")"
-        print_text_error "pipenv не установлен. Установите pipenv https://pipenv.pypa.io/en/latest/installation.html"
+    if ! command -v uv &> /dev/null; then
+        line_output2 "uv" "$(print_text_error "Error")"
+        # TODO Указать правильный url для установки uv
+        print_text_error "uv не установлен. Установите uv https://uv.pypa.io/en/latest/installation.html"
         echo ""
         exit 1
     fi
-    line_output2 "pipenv" "$(print_text_success "OK")"
+    line_output2 "uv" "$(print_text_success "OK")"
 
     print_text_block success "Шаг #1 успешно выполнен"
     confirm_to_continue "Выполнить Шаг #2 - $(service_print_steps_text step2)?"
@@ -215,7 +216,7 @@ confirm_creation_backend_drf() {
     print_text_block info "Шаг 2 - $(service_print_steps_text step2)"
     echo "Для этого мы выполним следующие действия:"
     echo -e "\u2014 Перейдем в каталог $(print_text_info2 ${BACKEND_DIR_DRF})"
-    echo -e "\u2014 Выполним команду $(print_text_info2 'pipenv sync --dev')"
+    echo -e "\u2014 Выполним команду $(print_text_info2 'uv sync --dev')"
 
     confirm_to_continue
 }
@@ -229,12 +230,12 @@ step2_install_backend_drf() {
     clear_screen
     confirm_creation_backend_drf
 
-    if pipenv sync --dev; then
+    if uv sync --dev; then
         print_text_block success "Шаг #2 успешно выполнен"
         confirm_to_continue "Выполнить Шаг #3 - $(service_print_steps_text step3)?"        
         return 0
     else
-        print_text_block error "Возникли ошибки при выполении pipenv sync --dev"
+        print_text_block error "Возникли ошибки при выполении uv sync --dev"
         return 1
     fi
 }
@@ -248,7 +249,7 @@ confirm_creation_backend_fastapi() {
     print_text_block info "Шаг 3 - $(service_print_steps_text step3)"
     echo "Для этого мы выполним следующие действия:"
     echo -e "\u2014 Перейдем в каталог $(print_text_info2 ${BACKEND_DIR_FASTAPI})"
-    echo -e "\u2014 Выполним команду $(print_text_info2 'pipenv sync --dev')"
+    echo -e "\u2014 Выполним команду $(print_text_info2 'uv sync --dev')"
 
     confirm_to_continue
 }
@@ -259,12 +260,12 @@ step3_install_backend_fastapi() {
     clear_screen
     confirm_creation_backend_fastapi
 
-    if pipenv sync --dev; then
+    if uv sync --dev; then
         print_text_block success "Шаг #3 успешно выполнен"
         confirm_to_continue "Выполнить Шаг #4 - $(service_print_steps_text step4)?"           
         return 0
     else
-        print_text_block error "Возникли ошибки при выполении pipenv sync --dev"
+        print_text_block error "Возникли ошибки при выполении uv sync --dev"
         return 1
     fi
 }
@@ -541,13 +542,13 @@ step6_next_steps() {
     echo -e ""
 
     # echo -e "$(print_text_info 'Создайте django admin user')"
-    # print_text_info2 "docker exec -it ${PROJECT_NAME}-service.drf-1 pipenv run python3 manage.py createsuperuser"
+    # print_text_info2 "docker exec -it ${PROJECT_NAME}-service.drf-1 uv run python3 manage.py createsuperuser"
     # echo -e "Django Admin доступна адресу $(print_text_info2 http://localhost:${NGINX_PORT}/admin)"
     # echo -e ""
 
 
     # echo -e "$(print_text_info 'Наполнить базу данных тестовыми данными')"
-    # print_text_info2 "docker exec -it ${PROJECT_NAME}-service.drf-1 pipenv run python3 manage.py testapp_fill_all_models"
+    # print_text_info2 "docker exec -it ${PROJECT_NAME}-service.drf-1 uv run python3 manage.py testapp_fill_all_models"
 
     echo -e ""
     print_text_info "Используйте run.sh скрипт для автоматизации повседневных задач"

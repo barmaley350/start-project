@@ -65,7 +65,7 @@ services:
       - internal-net
     command: >
       sh -c "./run_before.sh
-      && pipenv run gunicorn -c gunicorn.py settings.wsgi:application"
+      && uv run gunicorn -c gunicorn.py settings.wsgi:application"
 
   # ----------------------------------------------------------------------------
   # fastapi backend
@@ -85,7 +85,7 @@ services:
     restart: unless-stopped
     networks:
       - internal-net
-    command: pipenv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    command: uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
   # ----------------------------------------------------------------------------
   # database

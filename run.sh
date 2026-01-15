@@ -106,30 +106,30 @@ help() {
     print_text_yellow "g1"
     print_text_white " \u2501 git checkout main & git merge dev &  git push gitlab dev & git push github dev & git push gitlab main & git push github main\n" 
     print_text_yellow "lbd"
-    print_text_white " \u2501 (backend/django) find ./apps -name "*.py" | xargs pipenv run pylint --rcfile=.pylintrc\n" 
+    print_text_white " \u2501 (backend/django) find ./apps -name "*.py" | xargs uv run pylint --rcfile=.pylintrc\n" 
     print_text_yellow "lbf"
-    print_text_white " \u2501 (backend/fastapi) find ./app -name "*.py" | xargs pipenv run pylint --rcfile=.pylintrc\n"     
+    print_text_white " \u2501 (backend/fastapi) find ./app -name "*.py" | xargs uv run pylint --rcfile=.pylintrc\n"     
     echo -e ""
 }
 # pytest
 command_pytest() {
-    docker exec -it ${FOLDER_NAME}-service.drf-1 pipenv run pytest "$@"
+    docker exec -it ${FOLDER_NAME}-service.drf-1 uv run pytest "$@"
 }
 # manage
 command_manage() {
-    docker exec -it ${FOLDER_NAME}-service.drf-1 pipenv run python3 manage.py "$@"
+    docker exec -it ${FOLDER_NAME}-service.drf-1 uv run python3 manage.py "$@"
 }
 # makemigrations
 command_makemigrations() {
-    docker exec -it ${FOLDER_NAME}-service.drf-1 pipenv run python3 manage.py makemigrations
+    docker exec -it ${FOLDER_NAME}-service.drf-1 uv run python3 manage.py makemigrations
 }
 # migrate
 command_migrate() {
-    docker exec -it ${FOLDER_NAME}-service.drf-1 pipenv run python3 manage.py migrate
+    docker exec -it ${FOLDER_NAME}-service.drf-1 uv run python3 manage.py migrate
 }
 # create django admin user
 command_createsuperuser() {
-    docker exec -it ${FOLDER_NAME}-service.drf-1 pipenv run python3 manage.py createsuperuser
+    docker exec -it ${FOLDER_NAME}-service.drf-1 uv run python3 manage.py createsuperuser
 }
 # docker shell
 command_shell() {
@@ -149,9 +149,9 @@ generate_sphinx_docs() {
     # cd $SCRIPT_DIR$PATH_TO_BACKEND_DOCS
     cd $SCRIPT_DIR$PATH_TO_BACKEND_DJANGO
     rm -rf apps/sphinx_docs/docs/_build/html
-    # pipenv run make SOURCEDIR=apps/sphinx_docs/docs BUILDDIR=apps/sphinx_docs/docs/_build/html clean
-    # pipenv run make SOURCEDIR=apps/sphinx_docs/docs BUILDDIR=apps/sphinx_docs/docs/_build/html html
-    pipenv run sphinx-build -b html apps/sphinx_docs/docs apps/sphinx_docs/docs/_build/html
+    # uv run make SOURCEDIR=apps/sphinx_docs/docs BUILDDIR=apps/sphinx_docs/docs/_build/html clean
+    # uv run make SOURCEDIR=apps/sphinx_docs/docs BUILDDIR=apps/sphinx_docs/docs/_build/html html
+    uv run sphinx-build -b html apps/sphinx_docs/docs apps/sphinx_docs/docs/_build/html
 
     if [ $? -ne 0 ]; then
         print_text_block error "Ошибка при создании документации Sphinx"  
@@ -167,16 +167,16 @@ generate_sphinx_docs() {
 generate_graph_models() {
     cd $SCRIPT_DIR$PATH_TO_BACKEND_DJANGO
     print_text_white "Создаем graph_models testapp -o apps/sphinx_docs/docs/_static/testapp.png\n"
-    pipenv run python3 manage.py graph_models testapp -o apps/sphinx_docs/docs/_static/testapp.png
+    uv run python3 manage.py graph_models testapp -o apps/sphinx_docs/docs/_static/testapp.png
 
     print_text_white "Создаем graph_models sphinx_docs -o apps/sphinx_docs/docs/_static/sphinx_docs.png\n"
-    pipenv run python3 manage.py graph_models sphinx_docs -o apps/sphinx_docs/docs/_static/sphinx_docs.png
+    uv run python3 manage.py graph_models sphinx_docs -o apps/sphinx_docs/docs/_static/sphinx_docs.png
 
     print_text_white "Создаем graph_models jupyter -o apps/sphinx_docs/docs/_static/jupyter.png\n"
-    pipenv run python3 manage.py graph_models jupyter -o apps/sphinx_docs/docs/_static/jupyter.png
+    uv run python3 manage.py graph_models jupyter -o apps/sphinx_docs/docs/_static/jupyter.png
 
     print_text_white "Создаем graph_models -o apps/sphinx_docs/docs/_static/all.png\n"
-    pipenv run python3 manage.py graph_models -o apps/sphinx_docs/docs/_static/all.png
+    uv run python3 manage.py graph_models -o apps/sphinx_docs/docs/_static/all.png
 
     if [ $? -ne 0 ]; then
         print_text_block error "Генерация graph_models структуры DB завершилась с ошибкой"
@@ -189,7 +189,7 @@ generate_graph_models() {
 }
 # collectstatic
 command_collectstatic() {
-    docker exec -it ${FOLDER_NAME}-service.drf-1 pipenv run python3 manage.py collectstatic --noinput
+    docker exec -it ${FOLDER_NAME}-service.drf-1 uv run python3 manage.py collectstatic --noinput
 
     if [ $? -ne 0 ]; then
         print_text_block error "Есть ошибки при выполнении collectstatic"
@@ -201,7 +201,7 @@ command_collectstatic() {
 command_ruff_check() {
     cd $SCRIPT_DIR$PATH_TO_BACKEND_DJANGO
 
-    pipenv run ruff check "$@"
+    uv run ruff check "$@"
 
     if [ $? -ne 0 ]; then
         print_text_block error "Есть ошибки при выполнении ruff check $@"
@@ -214,7 +214,7 @@ command_ruff_check() {
 command_ruff_format() {
     # Ruff formater backend/django
     cd $SCRIPT_DIR$PATH_TO_BACKEND_DJANGO
-    pipenv run ruff format
+    uv run ruff format
 
     if [ $? -ne 0 ]; then
         print_text_block error "сть ошибки при выполнении ruff format $@"
@@ -224,7 +224,7 @@ command_ruff_format() {
 }
 command_django_apps() {
     cd $SCRIPT_DIR$PATH_TO_BACKEND_DJANGO
-    pipenv run python3 manage.py startapp $@ apps/$@
+    uv run python3 manage.py startapp $@ apps/$@
 
     if [ $? -ne 0 ]; then
         print_text_block error "Ошибка создания приложения apps/$@"
@@ -260,7 +260,7 @@ command_git() {
 command_pylint_django() {
     cd $SCRIPT_DIR$PATH_TO_BACKEND_DJANGO
         
-    find ./apps -name "*.py" | xargs pipenv run pylint --rcfile=.pylintrc
+    find ./apps -name "*.py" | xargs uv run pylint --rcfile=.pylintrc
 
     if [ $? -ne 0 ]; then
         print_text_block error "Ошибка выполнения комманды backend/django/pylint"
@@ -273,7 +273,7 @@ command_pylint_django() {
 command_pylint_fastapi() {
     cd $SCRIPT_DIR$PATH_TO_BACKEND_FASTAPI
         
-    find ./app -name "*.py" | xargs pipenv run pylint --rcfile=.pylintrc
+    find ./app -name "*.py" | xargs uv run pylint --rcfile=.pylintrc
 
     if [ $? -ne 0 ]; then
         print_text_block error "Ошибка выполнения комманды backend/fastapi/pylint"

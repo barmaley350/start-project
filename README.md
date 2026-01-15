@@ -51,7 +51,7 @@
 
 
 ```
-pipenv run locust -f ./tests/external/locust.py --headless -u 100 -r 10 -t 1m --html=./tests/external/report.html
+uv run locust -f ./tests/external/locust.py --headless -u 100 -r 10 -t 1m --html=./tests/external/report.html
 ```
 
 # Доступные сервисы  
@@ -84,46 +84,66 @@ pipenv run locust -f ./tests/external/locust.py --headless -u 100 -r 10 -t 1m --
 # Установленные и настроенные модули
 
 ## Backend Django
-```
-cd services/drf && pipenv graph | grep -E '^[A-Za-z].*=='
-```
 
 ```
-coverage==7.12.0
-django-debug-toolbar==6.1.0
-django-extensions==4.1
-drf-spectacular==0.29.0
-factory-boy==3.3.3
-gunicorn==23.0.0
-psycopg2-binary==2.9.11
-pydot==4.0.1
-pylint-django==2.7.0
-pytest-django==4.11.1
-python-dotenv==1.2.1
-ruff==0.14.8
-sphinx-rtd-theme==3.0.2
-sphinxcontrib-django==2.5
+dependencies = [
+    "django>=6.0.1",
+    "djangorestframework>=3.16.1",
+    "drf-spectacular>=0.29.0",
+    "gunicorn>=23.0.0",
+    "psycopg2-binary>=2.9.11",
+    "pylint>=4.0.4",
+    "pylint-django>=2.7.0",
+    "python-dotenv>=1.2.1",
+    "sphinx>=9.1.0",
+    "sphinx-rtd-theme>=3.1.0",
+    "sphinxcontrib-django>=2.5",
+]
+
+[dependency-groups]
+dev = [
+    "coverage>=7.13.1",
+    "django-debug-toolbar>=6.1.0",
+    "django-extensions>=4.1",
+    "factory-boy>=3.3.3",
+    "faker>=40.1.2",
+    "locust>=2.43.1",
+    "pydot>=4.0.1",
+    "pyparsing>=3.3.1",
+    "pytest>=9.0.2",
+    "pytest-django>=4.11.1",
+    "ruff>=0.14.11",
+]
 ```
 Для получения дополнительной информации
 ```
-cd services/drf/ && pipenv graph
+cd services/drf/ && uv tree
 ```
 ## Backend FastApi
-```
-cd services/fastapi && pipenv graph | grep -E '^[A-Za-z].*=='
-```
 
 ```
-fastapi==0.128.0
-psycopg2-binary==2.9.11
-pylint==4.0.4
-ruff==0.14.11
-sqlacodegen==3.2.0
-uvicorn==0.40.0
+dependencies = [
+    "fastapi>=0.128.0",
+    "psycopg2-binary>=2.9.11",
+    "pydantic>=2.12.5",
+    "pylint>=4.0.4",
+    "python-dotenv>=1.2.1",
+    "ruff>=0.14.11",
+    "sqlacodegen>=3.2.0",
+    "sqlalchemy>=2.0.45",
+    "uvicorn>=0.40.0",
+]
+
+[dependency-groups]
+dev = [
+    "eralchemy>=1.6.0",
+    "graphviz>=0.21",
+    "locust>=2.43.1",
+]
 ```
 Для получения дополнительной информации
 ```
-cd services/fastapi/ && pipenv graph
+cd services/fastapi/ && uv tree
 ```
 
 ## Frontend Nuxtjs
@@ -154,7 +174,7 @@ cd services/nuxtjs/ && npm list
 | ------------- | ------------- | - | - |
 | Docker Decktop  | Управление контейнерами  | Если вам не нужен UI то можете использовать `docker cli`| `4.43.1 (198352)`|
 | Python3  | Для backend  | | `3.12`|
-| pipenv  | Для backend  | Для быстрого запуска используйте `pipenv`. `uv` на подходе.   | `pipenv, version 2023.12.1` |
+| uv  | Для backend  | | `uv 0.9.25` |
 | Nodejs  | Для frontend  |  | `v25.1.0` |
 | npm  | Для frontend  |  | `11.6.2` |
 
@@ -198,7 +218,7 @@ chmod +x init.sh
 cd services/drf/
 ```
 ```
-pipenv sync --dev
+uv sync --dev
 ```
 ```
 cp .env.example .env
@@ -224,7 +244,7 @@ POSTGRES_PORT=5432
 cd services/drf/
 ```
 ```
-pipenv run python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+uv run python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
 ```
 Вывод команды скопируйте и вставьте в `SECRET_KEY`
 
@@ -237,7 +257,7 @@ pipenv run python -c "from django.core.management.utils import get_random_secret
 cd services/fastapi/
 ```
 ```
-pipenv sync --dev
+uv sync --dev
 ```
 ```
 cp .env.example .env
