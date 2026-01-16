@@ -68,12 +68,12 @@ uv run locust -f ./tests/external/locust.py --headless -u 100 -r 10 -t 1m --html
 | fastapi  | `да` | [http://localhost:1338/fastapi/redoc/](http://localhost:1338/fastapi/redoc/)  | Документация fastapi/api/redoc | 
 | drf | `да` | [http://localhost:1338/drf/api/v1/](http://localhost:1338/drf/api/v1/)  | api на базе DRF |
 | drf | `да` | [http://localhost:1338/drf/admin/](http://localhost:1338/drf/admin/)  | Django Admin Panel |
-| drf  | `да` | [http://localhost:1338/drf/sphinx/](http://localhost:1338/drf/sphinx/)  | Документация к django моделям | 
-| drf  | `да` | [http://localhost:1338/drf/swagger/](http://localhost:1338/drf/swagger/)  | Документация к django/api/swagger | 
-| drf  | `да` | [http://localhost:1338/drf/redoc/](http://localhost:1338/drf/redoc/)  | Документация к django/api/redoc | 
+| drf  | `да` | [http://localhost:1338/drf/sphinx/](http://localhost:1338/drf/sphinx/)  | Документация django models/views | 
+| drf  | `да` | [http://localhost:1338/drf/swagger/](http://localhost:1338/drf/swagger/)  | Документация django/api/swagger | 
+| drf  | `да` | [http://localhost:1338/drf/redoc/](http://localhost:1338/drf/redoc/)  | Документация django/api/redoc | 
 | adminer | `да` | [http://localhost:1338/adminer/](http://localhost:1338/adminer/)  | Web интерфейс для работы с DB |
-| jupyter | `да` | [http://localhost:1338/jupyter/](http://localhost:1338/jupyter/)  | JupyterLab для DS |
-| smtp4dev | `да` | [http://localhost:1338/smtp4dev/](http://localhost:1338/smtp4dev/)  | smtp4dev |
+| jupyter | `да` | [http://localhost:1338/jupyter/](http://localhost:1338/jupyter/)  | JupyterLab |
+| smtp4dev | `да` | [http://localhost:1338/smtp4dev/](http://localhost:1338/smtp4dev/)  | SMTP сервер |
 
 |   |  | |
 | ------------- | ------------- |  ------------- |
