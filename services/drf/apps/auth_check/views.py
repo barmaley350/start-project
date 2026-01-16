@@ -19,6 +19,7 @@ class ProtectedUrlView(View):
         protected_urls = [
             "/adminer",
             "/jupyter",
+            "/smtp4dev",
             "/drf/sphinx",
             "/drf/swagger",
             "/drf/redoc",

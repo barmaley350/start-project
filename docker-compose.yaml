@@ -3,6 +3,8 @@ volumes:
     name: ${DB_VOLUME_NAME:-db-data}
   static-files:
     name: ${STATIC_VOLUME_NAME:-static-files}
+  smtp4dev-files:
+    name: ${SMTP4DEV_VOLUME_NAME:-smtp4dev-files}
 
 networks:
   internal-net:
@@ -133,3 +135,20 @@ services:
     restart: unless-stopped
     networks:
       - internal-net
+
+  # ----------------------------------------------------------------------------
+  # database
+  # ----------------------------------------------------------------------------
+  service.smtp4dev:
+    image: rnwood/smtp4dev:prerelease
+    expose:
+      - 80
+      - 110
+      - 25
+    environment:
+      - ServerOptions__BasePath=/smtp4dev
+    volumes:
+      - smtp4dev-files:/smtp4dev
+    restart: unless-stopped
+    networks:
+      - internal-net      
