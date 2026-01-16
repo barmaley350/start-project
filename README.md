@@ -60,7 +60,7 @@ uv run locust -f ./tests/external/locust.py --headless -u 100 -r 10 -t 1m --html
 > Замените порт `1338` на тот который вы указали при настройке проекта.
 > Ознакомьтесь с [дополнительной информацией](#настройки-docker)
 
-|fff|  Контейнер |auth| Url | Описание |
+||  Контейнер |auth| Url | Описание |
 |-| ------------- | - | ------------- | - |
 |frontend|  |  |  |  |
 || frontend | `нет` | [http://localhost:1338/](http://localhost:1338/)  | frontend на базе NuxtJs |
@@ -73,7 +73,7 @@ uv run locust -f ./tests/external/locust.py --headless -u 100 -r 10 -t 1m --html
 || drf  | `да` | [http://localhost:1338/drf/sphinx/](http://localhost:1338/drf/sphinx/)  | Документация django models/views | 
 || drf  | `да` | [http://localhost:1338/drf/swagger/](http://localhost:1338/drf/swagger/)  | Документация django/api/swagger | 
 ||drf  | `да` | [http://localhost:1338/drf/redoc/](http://localhost:1338/drf/redoc/)  | Документация django/api/redoc | 
-|Дополнительные сервисы|  |  |  |  |
+|Доп. сервисы|  |  |  |  |
 || drf | `да` | [http://localhost:1338/drf/admin/](http://localhost:1338/drf/admin/)  | Django Admin Panel |
 || adminer | `да` | [http://localhost:1338/adminer/](http://localhost:1338/adminer/)  | Web интерфейс для работы с DB |
 || jupyter | `да` | [http://localhost:1338/jupyter/](http://localhost:1338/jupyter/)  | JupyterLab |
