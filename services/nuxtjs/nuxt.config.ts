@@ -21,6 +21,12 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/ui',
   ],
+  ui: {
+    fonts: false // Полностью отключает интеграцию с @nuxt/fonts
+  },
+  // fonts: {
+  //   providers: [], // Со скобками {} не работает 
+  // },
   css: [
     '~/assets/css/main.css',
   ],

@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM node:current-alpine AS base
+FROM node:current-slim AS base
 ENV APP_ROOT=/app
 ENV NODE_ENV=development
 
