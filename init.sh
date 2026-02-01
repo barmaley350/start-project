@@ -196,8 +196,7 @@ step1_check_system_requirements() {
 
     if ! command -v uv &> /dev/null; then
         line_output2 "uv" "$(print_text_error "Error")"
-        # TODO Указать правильный url для установки uv
-        print_text_error "uv не установлен. Установите uv https://uv.pypa.io/en/latest/installation.html"
+        print_text_error "uv не установлен. Установите uv https://pypi.org/project/uv/"
         echo ""
         exit 1
     fi
@@ -392,10 +391,7 @@ create_env_frontend_nuxtjs() {
         return 1
     fi
 
-    # print_text_block success "Настройка параметров окружения для frontend завершена"
     print_text_block success "$(service_print_steps_text step53) завершена"
-    # line_output2 "$(service_print_steps_text step53)" "$(print_text_success "Ok")"
-    # confirm_to_continue
     confirm_to_continue "Далее - $(service_print_steps_text step51)"
 }
 
@@ -404,7 +400,6 @@ create_env_frontend_nuxtjs() {
 # ------------------------------------------------------------------------------------
 create_env_backend_drf() {
     clear_screen
-    # print_text_block info "Настройка параметров окружения для backend"
     print_text_block info "$(service_print_steps_text step51)"
 
     cd $BACKEND_DIR_DRF
@@ -436,7 +431,6 @@ create_env_backend_drf() {
     sed -i "s|^SECRET_KEY=.*|SECRET_KEY=\"$SECRET_KEY\"|" .env
     sed -i "s|^POSTGRES_PASSWORD=.*|POSTGRES_PASSWORD=\"$POSTGRES_PASSWORD\"|" .env
 
-    # print_text_block success "Настройка параметров окружения для backend завершена"
     print_text_block success "$(service_print_steps_text step51) завершена"
     confirm_to_continue "Далее - $(service_print_steps_text step52)"
 }
@@ -446,7 +440,6 @@ create_env_backend_drf() {
 # ------------------------------------------------------------------------------------
 create_env_backend_fastapi() {
     clear_screen
-    # print_text_block info "Настройка параметров окружения для backend"
     print_text_block info "$(service_print_steps_text step52)"
 
     cd $BACKEND_DIR_DRF
@@ -469,7 +462,6 @@ create_env_backend_fastapi() {
 
     sed -i "s|^POSTGRES_PASSWORD=.*|POSTGRES_PASSWORD=\"$POSTGRES_PASSWORD\"|" .env
 
-    # print_text_block success "Настройка параметров окружения для backend завершена"
     print_text_block success "$(service_print_steps_text step52) завершена"
     confirm_to_continue "Далее - $(service_print_steps_text step54)"
 }
@@ -479,7 +471,6 @@ create_env_backend_fastapi() {
 # ------------------------------------------------------------------------------------
 create_env_docker() {
     clear_screen
-    # print_text_block info "Настройка параметров окружения для docker"
     print_text_block info "$(service_print_steps_text step54)"
 
     cd $BASE_DIR
@@ -509,10 +500,6 @@ create_env_docker() {
     sed -i "s|^DB_VOLUME_NAME=.*|DB_VOLUME_NAME=\"$DB_VOLUME_NAME\"|" .env
     sed -i "s|^STATIC_VOLUME_NAME=.*|STATIC_VOLUME_NAME=\"$STATIC_VOLUME_NAME\"|" .env
 
-    # sed -i "s|^PROJECT_BASE_DIR=.*|PROJECT_BASE_DIR=\"$BASE_DIR\"|" .env
-    # sed -i "s|^PROJECT_NAME=.*|PROJECT_NAME=\"$PROJECT_NAME\"|" .env
-
-    # print_text_block success "Настройка параметров окружения для docker завершена"
     print_text_block success "$(service_print_steps_text step54) завершена"
     confirm_to_continue "Далее - $(service_print_steps_text step6)"
 }
@@ -541,21 +528,11 @@ step6_next_steps() {
     echo -e "Убедитесь что все запустилось и сайт доступен по адресу $(print_text_info2 http://localhost:${NGINX_PORT})"
     echo -e ""
 
-    # echo -e "$(print_text_info 'Создайте django admin user')"
-    # print_text_info2 "docker exec -it ${PROJECT_NAME}-service.drf-1 uv run python3 manage.py createsuperuser"
-    # echo -e "Django Admin доступна адресу $(print_text_info2 http://localhost:${NGINX_PORT}/admin)"
-    # echo -e ""
-
-
-    # echo -e "$(print_text_info 'Наполнить базу данных тестовыми данными')"
-    # print_text_info2 "docker exec -it ${PROJECT_NAME}-service.drf-1 uv run python3 manage.py testapp_fill_all_models"
-
     echo -e ""
     print_text_info "Используйте run.sh скрипт для автоматизации повседневных задач"
     echo -e "Перейдите в корневую папку проекта $(print_text_info2 ${BASE_DIR})"
     echo -e "и запустите скрипт $(print_text_info2 './run.sh') для получения дополнительной информации."
-    # echo -e "Для получения дополнительной информации ознакомитесь с README.md" 
-    # echo -e "https://github.com/barmaley350/start-project/blob/main/README.md"
+
     echo -e ""
     echo -e "   Создание django admin user"
     print_text_info2 "      ./run.sh m createsuperuser"
