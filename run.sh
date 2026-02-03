@@ -242,10 +242,10 @@ command_git() {
 
     git push gitlab dev
     git push github dev
-    # git push gitverse dev
+    git push gitverse dev
     git push gitlab main
     git push github main 
-    # git push gitverse main
+    git push gitverse main
     
 
     git checkout dev
