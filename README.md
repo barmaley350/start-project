@@ -196,13 +196,17 @@ cd test-project/
 ```
 Клонируйте репозиторий
 
-Для GitHub
+Для GitHub `публичный`
 ```
 git clone https://github.com/barmaley350/start-project.git .
 ```
-Для GitLab
+Для GitLab `приватный`
 ```
 git clone https://gitlab.com/barmaley350/start-project.git .
+```
+Для GitVerse `приватный`
+```
+git clone https://gitverse.ru/barmaley360/start-project.git .
 ```
 # Настройка
 ## Автоматическая настройка с использованием init.sh
