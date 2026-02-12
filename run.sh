@@ -89,12 +89,12 @@ help() {
     print_text_white " \u2501 Применить миграции django (manage.py migrate) \n"         
     print_text_yellow "sd | sphinx_doc"
     print_text_white " \u2501 Сгенерировать Sphinx документацию \n" 
-    print_text_yellow "rc | ruffcheck"
-    print_text_white " \u2501 Запустить ruff check \n"     
-    print_text_yellow "rf | ruffformat"
-    print_text_white " \u2501 Запустить ruff format \n"   
-    print_text_yellow "ra | ruff"
-    print_text_white " \u2501 Запустить ruff check и ruff format \n"       
+    print_text_yellow "rc | ruffcheck [all|drf|fastapi]"
+    print_text_white " \u2501 Запустить ruff check для drf или fastapi или all (default) для того и другого\n"     
+    print_text_yellow "rf | ruffformat [all|drf|fastapi]"
+    print_text_white " \u2501 Запустить ruff format для drf или fastapi или all (default) для того и другого\n"   
+    print_text_yellow "ra | ruff [all|drf|fastapi]"
+    print_text_white " \u2501 Запустить ruff check и ruff format для drf или fastapi или all (default) для того и другого\n"       
     print_text_yellow "fc | commit"
     print_text_white " \u2501 Запустить gendoc, ruff check, ruff format и pytest \n"      
     print_text_yellow "da | create_admin"
@@ -199,28 +199,65 @@ command_collectstatic() {
     return 0
 }
 command_ruff_check() {
-    cd $SCRIPT_DIR$PATH_TO_BACKEND_DJANGO
+    if [[ "$@" == "drf" ]]; then
+        TITLE="BACKEND DJANGO"
+        PATH_TO_CHECK=$PATH_TO_BACKEND_DJANGO
+        cd $SCRIPT_DIR$PATH_TO_BACKEND_DJANGO
+        uv run ruff check
+    elif [[ "$@" == "fastapi" ]]; then
+        TITLE="BACKEND FASTAPI"
+        PATH_TO_CHECK=$PATH_TO_BACKEND_FASTAPI
+        cd $SCRIPT_DIR$PATH_TO_BACKEND_FASTAPI
+        uv run ruff check  
+    else
+        TITLE="ALL"
+        PATH_TO_CHECK=$PATH_TO_BACKEND_DJANGO"|"$PATH_TO_BACKEND_FASTAPI
 
-    uv run ruff check "$@"
+        cd $SCRIPT_DIR$PATH_TO_BACKEND_DJANGO
+        uv run ruff check
+
+        cd $SCRIPT_DIR$PATH_TO_BACKEND_FASTAPI
+        uv run ruff check
+    fi
+   
 
     if [ $? -ne 0 ]; then
-        print_text_block error "Есть ошибки при выполнении ruff check $@"
+        print_text_block error "[$TITLE ($PATH_TO_CHECK)] Есть ошибки при выполнении ruff check"
         exit $?
     fi
-    print_text_block success "Успешное завершение ruff check $@"
+    print_text_block success "[$TITLE ($PATH_TO_CHECK)] Успешное завершение ruff check"
     return 0
 }
 
 command_ruff_format() {
-    # Ruff formater backend/django
-    cd $SCRIPT_DIR$PATH_TO_BACKEND_DJANGO
-    uv run ruff format
+    if [[ "$@" == "drf" ]]; then
+        TITLE="BACKEND DJANGO"
+        PATH_TO_CHECK=$PATH_TO_BACKEND_DJANGO
+        cd $SCRIPT_DIR$PATH_TO_BACKEND_DJANGO
+        uv run ruff format
+    elif [[ "$@" == "fastapi" ]]; then
+        TITLE="BACKEND FASTAPI"
+        PATH_TO_CHECK=$PATH_TO_BACKEND_FASTAPI
+        cd $SCRIPT_DIR$PATH_TO_BACKEND_FASTAPI
+        uv run ruff format  
+    else
+        TITLE="ALL"
+        PATH_TO_CHECK=$PATH_TO_BACKEND_DJANGO"|"$PATH_TO_BACKEND_FASTAPI
+
+        cd $SCRIPT_DIR$PATH_TO_BACKEND_DJANGO
+        uv run ruff format
+
+        cd $SCRIPT_DIR$PATH_TO_BACKEND_FASTAPI
+        uv run ruff format
+    fi
+   
 
     if [ $? -ne 0 ]; then
-        print_text_block error "сть ошибки при выполнении ruff format $@"
+        print_text_block error "[$TITLE ($PATH_TO_CHECK)] Есть ошибки при выполнении ruff format"
         exit $?
     fi
-    print_text_block success "Успешное завершение ruff format $@"
+    print_text_block success "[$TITLE ($PATH_TO_CHECK)] Успешное завершение ruff format"
+    return 0
 }
 command_django_apps() {
     cd $SCRIPT_DIR$PATH_TO_BACKEND_DJANGO
@@ -286,13 +323,13 @@ command_pylint_fastapi() {
 }
 
 command_ruff_all() {
-    command_ruff_check
-    command_ruff_format
+    command_ruff_check "$@"
+    command_ruff_format "$@"
 }
 # commit
 command_commit() {
     command_gendoc
-    command_ruff_all
+    command_ruff_all "$@"
     command_pytest
 }
 # main
@@ -328,7 +365,7 @@ main() {
             command_ruff_format "$@"
             ;;   
         ra | ruff)
-            command_ruff_all
+            command_ruff_all "$@"
             ;;      
         fc | commit)
             command_commit
