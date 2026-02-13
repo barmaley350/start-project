@@ -22,6 +22,7 @@
   - [Создать django superuser](#создать-django-superuser)
   - [Наполнить базу тестовыми данными](#наполнить-базу-тестовыми-данными)
 - [Настройка git pre-commit](#настройка-git-pre-commit)
+- [Настройка и использование run.sh](#настройка-и-использование-runsh)
 - [License](#license)
 
 # Что это такое и зачем это нужно
@@ -326,11 +327,11 @@ docker compose up
 ```
 ## Создать django superuser
 ```
-./run.sh m createsuperuser
+./run.sh 1 createsuperuser
 ```
 ## Наполнить базу тестовыми данными
 ```
-./run.sh m testapp_fill_all_models
+./run.sh 1 testapp_fill_all_models
 ```
 # Настройка git pre-commit
 
@@ -343,6 +344,7 @@ docker compose up
 ```
 cp files/git/pre-commit .git/hooks
 ```
+# Настройка и использование run.sh
 
 Для более удобной работы вы можете использовать `run.sh` скрипт, который упрощает работу с повседневными задачами
 ```
@@ -352,6 +354,22 @@ chmod +x ./run.sh
 ./run.sh
 ```
 ![img_1](files/img/runsh/run_script.png)
+
+Вы также можете добавить свои собственные команды. Для это добавьте свои команды в файл `./files/commands/run_commands.txt` используя следующий формат
+```
+--begin
+Псевдоним
+Команда
+Описание что делает данная команда [необязательно]
+--end
+```
+Например
+```
+--begin
+ldf
+cd ./services/fastapi/ && find ./app -name '*.py' | xargs uv run pylint --rcfile=.pylintrc
+--end
+```
 
 # License
 [MIT](LICENSE)
