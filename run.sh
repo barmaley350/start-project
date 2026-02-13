@@ -16,10 +16,10 @@
 
 
 # Определение цвета
-RED='\033[0;31m'
-GREEN='\033[0;32m'
+RED='\033[1;31m'
+GREEN='\033[1;32m'
 YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
+BLUE='\033[1;34m'
 NC='\033[0m' 
 
 #
@@ -44,6 +44,7 @@ USER_COMMAND_FILE=$SCRIPT_DIR"/files/commands/run_commands.txt"
 
 #
 source $SCRIPT_DIR"/files/commands/command_sphinx_docs.sh"
+source $SCRIPT_DIR"/files/commands/command_ruff.sh"
 
 # Вывод текста обычным, белым, цветом
 print_text_white() {
@@ -85,18 +86,26 @@ print_header() {
     line 
     print_text_yellow "Основные команды\n"
     line
-    print_text_green "mdrf [params]"
+    print_text_green "1|mdrf [params]"
     print_text_white " \u2501 Запустить manage.py в backend/drf контейнере \n"   
     print_text_white "  В качестве [params] можно использовать, припример, makemigrations, migrate, createsuperuser и т.д. \n" 
     print_text_white "  Полный перечень параметров можно получить запустив команду без параметров \n" 
-    print_text_green "tdrf [params]"
+    print_text_green "2|tdrf [params]"
     print_text_white " \u2501 Запустить pytest в backend/drf контейнере\n"      
-    print_text_green "sdrf"
+    print_text_green "3|sdrf"
     print_text_white " \u2501 Запустить /bin/bash в backend/drf контейнере для ручного выполнения команд\n"  
-    print_text_green "sfast"
+    print_text_green "4|sfastapi"
     print_text_white " \u2501 Запустить /bin/bash в backend/fastapi контейнере для ручного выполнения команд\n" 
-    print_text_green "sddrf"
-    print_text_white " \u2501 Сгенерировать Sphinx документацию\n"                   
+    print_text_green "5|sddrf"
+    print_text_white " \u2501 Сгенерировать Sphinx документацию\n"       
+    print_text_green "6|rcdrf [params]"
+    print_text_white " \u2501 Запустить ruff check для backend/drf\n"     
+    print_text_green "7|rfdrf [params]"
+    print_text_white " \u2501 Запустить ruff format для backend/drf\n"       
+    print_text_green "8|rcfastapi [params]"
+    print_text_white " \u2501 Запустить ruff check для backend/fastapi\n"     
+    print_text_green "9|rffastapi [params]"
+    print_text_white " \u2501 Запустить ruff format для backend/fastapi\n"                  
     line  
 }
 
@@ -205,7 +214,7 @@ start_command() {
 # manage
 command_manage() {
     docker exec -it ${FOLDER_NAME}-service.drf-1 uv run python3 manage.py $USER_PARAMS
-    check_command_run_status $?
+    check_command_run_status $? "Выполнение команды python3 manage.py $USER_PARAMS"
 }
 
 # docker shell drf
@@ -230,21 +239,33 @@ command_pytest() {
 start_exist_command() {
 
     case $USER_COMMAND in
-        mdrf)
+        1|mdrf)
             command_manage
             ;;    
-        sdrf)
-            command_shell_drf
-            ;;
-        sfastapi)
-            command_shell_fastapi
-            ;;            
-        tdrf)
+        2|tdrf)
             command_pytest
             ;;   
-        sddrf)
+        3|sddrf)
             command_drf_gendoc
-            ;;             
+            ;;  
+        4|sfastapi)
+            command_shell_fastapi
+            ;;              
+        5|sdrf)
+            command_shell_drf
+            ;;
+        6|rcdrf)
+            command_ruff_check_drf
+            ;;       
+        7|rfdrf)
+            command_ruff_format_drf
+            ;;    
+        8|rcfastapi)
+            command_ruff_check_fastapi
+            ;;       
+        9|rffastapi)
+            command_ruff_format_fastapi
+            ;;                             
         *)
             line; print_text_red "\u2718 Нет такой комманды \u00AB$USER_COMMAND\u00BB\n"
             print_text_white "Запустите \u00ABrun.sh\u00BB без параметров что-бы посмотреть список доступных команд\n"
