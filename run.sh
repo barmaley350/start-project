@@ -22,8 +22,11 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' 
 
-# Файл с пользовательскими командами
-USER_COMMAND_FILE="run_commands.txt"
+#
+PATH_TO_BACKEND_DJANGO="/services/drf"
+PATH_TO_BACKEND_FASTAPI="/services/fastapi"
+PATH_TO_BACKEND_DOCS="/services/drf/apps/sphinx_docs/docs"
+
 
 # Получение параметров командной строки
 USER_INPUT="$@"
@@ -35,6 +38,12 @@ SCRIPT_DIR=$(cd -P "$(dirname -- "$0")" && pwd -P)
 
 # Извлекаем только имя папки из полного пути
 FOLDER_NAME=$(basename "$SCRIPT_DIR")
+
+# Файл с пользовательскими командами
+USER_COMMAND_FILE=$SCRIPT_DIR"/files/commands/run_commands.txt"
+
+#
+source $SCRIPT_DIR"/files/commands/command_sphinx_docs.sh"
 
 # Вывод текста обычным, белым, цветом
 print_text_white() {
@@ -85,7 +94,9 @@ print_header() {
     print_text_green "sdrf"
     print_text_white " \u2501 Запустить /bin/bash в backend/drf контейнере для ручного выполнения команд\n"  
     print_text_green "sfast"
-    print_text_white " \u2501 Запустить /bin/bash в backend/fastapi контейнере для ручного выполнения команд\n"               
+    print_text_white " \u2501 Запустить /bin/bash в backend/fastapi контейнере для ручного выполнения команд\n" 
+    print_text_green "sddrf"
+    print_text_white " \u2501 Сгенерировать Sphinx документацию\n"                   
     line  
 }
 
@@ -120,7 +131,7 @@ read_file() {
                 print_text_white "  $line \n"
             fi
         fi
-    done < "$SCRIPT_DIR/$USER_COMMAND_FILE"    
+    done < "$USER_COMMAND_FILE"    
     line
 }
 
@@ -158,20 +169,27 @@ start_user_command() {
                 fi            
             fi
         fi
-    done < "$SCRIPT_DIR/$USER_COMMAND_FILE"    
+    done < "$USER_COMMAND_FILE"    
 }
 
 # Проверка статуса выполнения команды
 check_command_run_status() {
-    command_run_status="$@"
+    command_run_status="$1"
+    command_run="$2"
+
+    output_text=$USER_INPUT
+    if [[ -n "$command_run" ]]; then
+        output_text+=" ($command_run)"
+    fi
+
 
     if [ $command_run_status -ne 0 ]; then
-        line; print_text_red "\u2718 Ошибка выполнения комманды \u00AB$USER_INPUT\u00BB\n"; line
+        line; print_text_red "\u2718 Ошибка выполнения комманды \u00AB$output_text\u00BB\n"; line
         exit $command_run_status
     fi
-    line; print_text_green "\u2714 Команда \u00AB$USER_INPUT\u00BB выполнилась успешно\n"; line
+    line; print_text_green "\u2714 Команда \u00AB$output_text\u00BB выполнилась успешно\n"; line
 
-    exit 0    
+    # exit 0    
 } 
 # Непосредственный запуск команды а также проверка результата выполнения
 start_command() {
@@ -180,6 +198,8 @@ start_command() {
     eval "$command"
 
     check_command_run_status $?
+    
+    exit 0
 }
 
 # manage
@@ -222,6 +242,9 @@ start_exist_command() {
         tdrf)
             command_pytest
             ;;   
+        sddrf)
+            command_drf_gendoc
+            ;;             
         *)
             line; print_text_red "\u2718 Нет такой комманды \u00AB$USER_COMMAND\u00BB\n"
             print_text_white "Запустите \u00ABrun.sh\u00BB без параметров что-бы посмотреть список доступных команд\n"
