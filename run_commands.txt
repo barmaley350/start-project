@@ -6,5 +6,15 @@
 
 --begin
 g1
-git checkout main & git merge dev & git push gitlab dev & git push github dev & git push gitverse dev & git push gitlab main & git push github main & git push gitverse main
+git checkout main && git merge dev && git push gitlab dev && git push github dev && git push gitverse dev && git push gitlab main && git push github main && git push gitverse main && git checkout dev
+--end
+
+--begin
+ldb
+cd ./services/drf/ && find ./apps -name '*.py' | xargs uv run pylint --rcfile=.pylintrc
+--end
+
+--begin
+ldf
+cd ./services/fastapi/ && find ./app -name '*.py' | xargs uv run pylint --rcfile=.pylintrc
 --end
