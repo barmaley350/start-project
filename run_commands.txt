@@ -1,0 +1,10 @@
+# --begin
+# Псевдоним
+# Команда
+# Описание что делает данная команда
+# --end
+
+--begin
+g1
+git checkout main & git merge dev & \n git push gitlab dev & git push github dev & git push gitverse dev & \n git push gitlab main & git push github main & git push gitverse main
+--end
