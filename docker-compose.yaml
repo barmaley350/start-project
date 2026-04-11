@@ -1,5 +1,5 @@
 volumes:
-  db-data-volume:
+  db-postgresql-data-volume:
     name: ${DB_VOLUME_NAME:-db-volume}
   static-files-volume:
     name: ${STATIC_VOLUME_NAME:-static-volume}
@@ -101,7 +101,7 @@ services:
     expose:
       - 5432
     volumes:
-      - db-data-volume:/var/lib/postgresql/18/docker
+      - db-postgresql-data-volume:/var/lib/postgresql/18/docker
     env_file:
       - ./services/drf/.env
     restart: unless-stopped
