@@ -246,13 +246,13 @@ start_exist_command() {
             command_pytest
             ;;   
         3|sddrf)
-            command_drf_gendoc
+            command_shell_drf
             ;;  
         4|sfastapi)
             command_shell_fastapi
             ;;              
         5|sdrf)
-            command_shell_drf
+            command_drf_gendoc
             ;;
         6|rcdrf)
             command_ruff_check_drf
