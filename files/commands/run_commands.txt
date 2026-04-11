@@ -18,3 +18,8 @@ cd ./services/drf/ && find ./apps -name '*.py' | xargs uv run pylint --rcfile=.p
 ldf
 cd ./services/fastapi/ && find ./app -name '*.py' | xargs uv run pylint --rcfile=.pylintrc
 --end
+
+--begin
+gc
+echo "создай текст для commit в формате Conventional Commits $(git diff --staged)" | xclip -selection clipboard
+--end
