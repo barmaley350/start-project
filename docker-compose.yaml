@@ -1,6 +1,6 @@
 volumes:
   db-postgresql-data-volume:
-    name: ${DB_VOLUME_NAME:-db-volume}
+    name: ${POSTGRESQL_DB_VOLUME_NAME:-db-volume}
   static-files-volume:
     name: ${STATIC_VOLUME_NAME:-static-volume}
   smtp4dev-volume:
