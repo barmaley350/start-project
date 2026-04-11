@@ -18,6 +18,7 @@ class ProtectedUrlView(View):
         """
         protected_urls = [
             "/adminer",
+            "/superset",
             "/jupyter",
             "/smtp4dev",
             "/drf/sphinx",
@@ -28,7 +29,7 @@ class ProtectedUrlView(View):
             "/fastapi/redoc",
             "/fastapi/openapi.json",
         ]
-        original_uri = request.headers.get("X-Original-URI")
+        original_uri = request.headers.get("X-Original-URI", "")
         return original_uri.startswith(tuple(protected_urls))
 
     def get(self, request: HttpRequest) -> HttpResponse:

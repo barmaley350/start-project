@@ -11,7 +11,7 @@ class JupyterPermission(models.Model):
     class Meta:
         """Docstring для Meta."""
 
-        permissions: ClassVar[dict] = [
+        permissions: ClassVar[list[tuple[str, str]]] = [
             ("view_jupyter", "Может просматривать jupyter"),
         ]
 
@@ -31,7 +31,7 @@ class SphinxDocsPermission(models.Model):
     class Meta:
         """Docstring for Meta."""
 
-        permissions: ClassVar[dict] = [
+        permissions: ClassVar[list[tuple[str, str]]] = [
             ("view_sphinx", "Может просматривать документацию Sphinx"),
         ]
 
@@ -51,7 +51,7 @@ class AdminerPermission(models.Model):
     class Meta:
         """Docstring для Meta."""
 
-        permissions: ClassVar[dict] = [
+        permissions: ClassVar[list[tuple[str, str]]] = [
             ("view_adminer", "Может просматривать adminer"),
         ]
 
