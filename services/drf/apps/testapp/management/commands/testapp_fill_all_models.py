@@ -55,13 +55,13 @@ class Command(BaseCommand):
         self.output_text(f"\t Кол-во коментариев {comments}")
         self.output_text(f"\t Кол-во пользователей {users}")
 
-    def clear_data(self, **options: dict[str:Any]) -> None:
+    def clear_data(self, is_clear: bool) -> None:  # noqa: FBT001
         """Docstring для clear_data.
 
         :param option: Описание
         :type option: dict[str: Any]
         """
-        if options.get("clear"):
+        if is_clear:
             Project.objects.all().delete()
             Tag.objects.all().delete()
             User.objects.filter(pk__gt=1).delete()
@@ -88,7 +88,7 @@ class Command(BaseCommand):
         """Docstring для output_process."""
         print(idx, end="\r")  # noqa: T201
 
-    def filling_project_models(self, **options: dict[str:Any]) -> None:  # pylint: disable=too-many-locals
+    def filling_project_models(self, options: dict[str, Any]) -> None:  # pylint: disable=too-many-locals
         """Заполнение моделей данными.
 
         :return: _description_
@@ -96,15 +96,15 @@ class Command(BaseCommand):
         """
         count = options.get("count")
 
-        self.clear_data(**options)
+        self.clear_data(bool(options.get("clear")))
 
         users = UserFactory.create_batch(10)
         tags = TagFactory.create_batch(10)
 
         self.output_text(f"Создаем проекты - {count} шт. Ожидайте...", "notice")
         project_data = []
-        for idx in range(count):
-            self.output_process(f"\t Создано {idx + 1} проектов из {count}")
+        for idx in range(count):  # pyright: ignore[reportArgumentType]
+            self.output_process(f"\t Создано {idx + 1} проектов из {count}")  # pyright: ignore[reportArgumentType]
             project = ProjectFactory.build(
                 owner=random.choice(users)  # noqa: S311
             )
@@ -122,7 +122,7 @@ class Command(BaseCommand):
         max_tags = 6
 
         self.output_text(
-            f"""Создаем коментарии. Min = {count * min_comments}, Max = {count * max_comments}. Ожидайте...""",  # noqa: E501 pylint: disable=line-too-long
+            f"""Создаем коментарии. Min = {count * min_comments}, Max = {count * max_comments}. Ожидайте...""",  # noqa: E501 pylint: disable=line-too-long # pyright: ignore[reportOptionalOperand]
             "notice",
         )
         all_comments = []
@@ -144,14 +144,14 @@ class Command(BaseCommand):
             ]
             all_comments.extend(comments_for_project)
             self.output_process(
-                f"\t Обработано {idx + 1} проектов из {count}. Создано коментариев {count_comments}"  # noqa: E501 pylint: disable=line-too-long
+                f"\t Обработано {idx + 1} проектов из {count}. Создано коментариев {count_comments}"  # noqa: E501 pylint: disable=line-too-long # pyright: ignore[reportArgumentType]
             )
 
         Comment.objects.bulk_create(all_comments)
         self.output_text("")
         self.output_text(f"\t Создано комментариев - {count_comments}")
 
-    def handle(self, *args: list[Any], **options: dict[str:Any]) -> None:
+    def handle(self, *args: list[Any], **options: dict[str, Any]) -> None:  # noqa: ARG002
         """Docstring для handle.
 
         :param self: Описание
@@ -161,7 +161,7 @@ class Command(BaseCommand):
         :type options: dict[str: Any]
         """
         start_time = time.time()
-        self.filling_project_models(*args, **options)
+        self.filling_project_models(options)
         self.print_stat()
         end_time = time.time()
 
