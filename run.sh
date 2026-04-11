@@ -31,7 +31,7 @@ PATH_TO_BACKEND_DOCS="/services/drf/apps/sphinx_docs/docs"
 # Получение параметров командной строки
 USER_INPUT="$@"
 USER_COMMAND="$1"
-USER_PARAMS="$2"
+USER_PARAMS=${@:2}
 
 # Определение абсолютного пути к каталогу скрипта
 SCRIPT_DIR=$(cd -P "$(dirname -- "$0")" && pwd -P)
