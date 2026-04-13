@@ -18,7 +18,7 @@ from apps.testapp.models import Comment, Project, Tag
 
 
 class Command(BaseCommand):
-    """Docstring for Command."""
+    """Пользовательская команда для удаления/заполнения моделей данными."""
 
     help = "Заполнение моделей приложения apps/testapp фейковыми данными"
 
@@ -41,9 +41,32 @@ class Command(BaseCommand):
             help="Количество записей для создания (default=100)",
         )
 
-    def output_text(
-        self, text: str, output_type: str | None = None, str_end: str = "\n"
-    ) -> None:
+    def print_stat(self) -> None:
+        """Вывод статистики."""
+        projects = Project.objects.count()
+        tags = Tag.objects.count()
+        comments = Comment.objects.count()
+        users = User.objects.count()
+
+        self.output_text("")
+        self.output_text("Общая статистика", "notice")
+        self.output_text(f"\t Кол-во проектов {projects}")
+        self.output_text(f"\t Кол-во тегов {tags}")
+        self.output_text(f"\t Кол-во коментариев {comments}")
+        self.output_text(f"\t Кол-во пользователей {users}")
+
+    def clear_data(self, is_clear: bool) -> None:  # noqa: FBT001
+        """Docstring для clear_data.
+
+        :param option: Описание
+        :type option: dict[str: Any]
+        """
+        if is_clear:
+            Project.objects.all().delete()
+            Tag.objects.all().delete()
+            User.objects.filter(pk__gt=1).delete()
+
+    def output_text(self, text: str, output_type: str | None = None) -> None:
         """_summary_.
 
         :param text: _description_
@@ -53,50 +76,32 @@ class Command(BaseCommand):
         """
         match output_type:
             case "notice":
-                self.stdout.write(f"\033[94m{text}\033[0m", ending=str_end)
+                self.stdout.write(f"\033[94m{text}\033[0m")
             case "success":
-                self.stdout.write(self.style.SUCCESS(text), ending=str_end)
+                self.stdout.write(self.style.SUCCESS(text))
             case "error":
-                self.stdout.write(self.style.ERROR(text), ending=str_end)
+                self.stdout.write(self.style.ERROR(text))
             case _:
-                self.stdout.write(text, ending=str_end)
+                self.stdout.write(text)
 
-    def print_stat(self) -> None:
-        """Вывод статистики."""
-        projects = Project.objects.count()
-        tags = Tag.objects.count()
-        comments = Comment.objects.count()
-        users = User.objects.count()
-
-        self.output_text("Общая статистика", "notice")
-        self.output_text(f"\u2192 Кол-во проектов {projects}")
-        self.output_text(f"\u2192 Кол-во тегов {tags}")
-        self.output_text(f"\u2192 Кол-во коментариев {comments}")
-        self.output_text(f"\u2192 Кол-во пользователей {users}")
-
-    def clear_data(self) -> None:
-        """Удаление всех данных."""
-        if self.options.get("clear"):
-            self.output_text(f"Удаляем модели ({', '.join(self.models)})", "notice")
-            Project.objects.all().delete()
-            self.output_text("\u2192 Удалено Project - ", str_end="")
-            self.output_text("OK", "success")
-
-            Tag.objects.all().delete()
-            self.output_text("\u2192 Удалено Tag - ", str_end="")
-            self.output_text("OK", "success")
-
-            User.objects.filter(pk__gt=1).delete()
-            self.output_text("\u2192 Удалено User - ", str_end="")
-            self.output_text("OK", "success")
-
-    def output_process(self, idx: str) -> None:
+    def output_process(self, idx: int) -> None:
         """Docstring для output_process."""
         print(idx, end="\r")  # noqa: T201
 
-    def make_project(self, model: str) -> None:
-        """_summary_."""
-        count = self.options.get("count")
+    def filling_project_models(self, options: dict[str, Any]) -> None:  # pylint: disable=too-many-locals
+        """Заполнение моделей данными.
+
+        :return: _description_
+        :rtype: None
+        """
+        count = options.get("count")
+
+        self.clear_data(bool(options.get("clear")))
+
+        users = UserFactory.create_batch(10)
+        tags = TagFactory.create_batch(10)
+
+        self.output_text(f"Создаем проекты - {count} шт. Ожидайте...", "notice")
         project_data = []
         for idx in range(count):  # pyright: ignore[reportArgumentType]
             self.output_process(f"\u2192 Создано {idx + 1} проектов из {count}")  # pyright: ignore[reportArgumentType]
@@ -111,8 +116,6 @@ class Command(BaseCommand):
         with transaction.atomic():
             self.projects = Project.objects.bulk_create(project_data)
 
-    def make_comment(self, model: str) -> None:
-        """_summary_."""
         min_comments = 4
         max_comments = 10
         min_tags = 3
@@ -142,36 +145,8 @@ class Command(BaseCommand):
             self.output_process(f"\u2192 Создано {model} ({count_comments})")
 
         Comment.objects.bulk_create(all_comments)
-        self.output_text(
-            f"\r\u2192 Создано {model} ({count_comments}) - ",
-            str_end="",
-        )
-        self.output_text("OK" + " " * 10, "success")
-
-    def make_model(self, model: str) -> None:
-        """_summary_."""
-        if model == "Tag":
-            self.tags = TagFactory.create_batch(10)
-            self.output_text(f"\u2192 Создано {model} (10) - ", str_end="")
-            self.output_text("OK", "success")
-        elif model == "User":
-            self.users = UserFactory.create_batch(10)
-            self.output_text(f"\u2192 Создано {model} (10) - ", str_end="")
-            self.output_text("OK", "success")
-        else:
-            self.output_text(f"\u2192 Нет такой модели {model} ", str_end="")
-            self.output_text("ERROR", "error")
-
-    def filling_models(self) -> None:
-        """_summary_."""
-        self.output_text(f"Создаем модели ({', '.join(self.models)})", "notice")
-        for model in self.models:
-            if model == "Project":
-                self.make_project(model)
-            elif model == "Comment":
-                self.make_comment(model)
-            else:
-                self.make_model(model)
+        self.output_text("")
+        self.output_text(f"\t Создано комментариев - {count_comments}")
 
     def handle(self, *args: list[Any], **options: dict[str, Any]) -> None:
         """Основная точка входа в программу.
