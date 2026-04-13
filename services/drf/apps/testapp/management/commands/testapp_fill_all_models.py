@@ -20,7 +20,7 @@ from apps.testapp.models import Comment, Project, Tag
 class Command(BaseCommand):
     """Пользовательская команда для удаления/заполнения моделей данными."""
 
-    help = "Заполнение моделей приложения apps/testapp фейковыми данными"
+    help = "Заполнение моделей приложения apps/testapp данными"
 
     def add_arguments(self, parser: CommandParser) -> None:
         """Чтение агрументов командной строки.
