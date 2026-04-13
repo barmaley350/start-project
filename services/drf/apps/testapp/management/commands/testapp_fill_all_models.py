@@ -88,7 +88,7 @@ class Command(BaseCommand):
             self.output_text("\u2192 Удалено Tag - ", str_end="")
             self.output_text("OK", "success")
 
-            User.objects.filter(pk__gt=1).delete()
+            User.objects.exclude(username="root").delete()
             self.output_text("\u2192 Удалено User - ", str_end="")
             self.output_text("OK", "success")
 
