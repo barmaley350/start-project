@@ -1,4 +1,4 @@
-"""Docstring для testapp_fill_all_models."""
+"""Docstring для testapp_fill_all_models..."""
 
 import random
 import time
