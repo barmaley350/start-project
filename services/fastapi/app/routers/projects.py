@@ -25,7 +25,7 @@ def get_projects(db: Annotated[Session, Depends(get_db)]) -> list[ProjectRespons
         .options(selectinload(TestappProject.testapp_comment))
         .limit(10)
         .all()
-    )
+    ) # pyright: ignore[reportReturnType]
 
 
 # http://localhost:1338/fastapi/api/v1/projects/1
