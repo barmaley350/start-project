@@ -38,10 +38,6 @@ services:
       context: .
       dockerfile: ./services/nuxtjs/Dockerfile
     command: "npm run dev"
-    # exposed:
-    #   - 5173
-    # ports:
-    #   - 5173:5173
     volumes:
       - ./services/nuxtjs:/app
     env_file:
