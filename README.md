@@ -79,6 +79,7 @@ uv run locust -f ./tests/external/locust.py --headless -u 100 -r 10 -t 1m --html
 || adminer | `да` | [http://localhost:1338/adminer/](http://localhost:1338/adminer/)  | Web интерфейс для работы с DB |
 || jupyter | `да` | [http://localhost:1338/jupyter/](http://localhost:1338/jupyter/)  | JupyterLab |
 || smtp4dev | `да` | [http://localhost:1338/smtp4dev/](http://localhost:1338/smtp4dev/)  | SMTP сервер |
+|| Apache Superset | `нет` | [http://localhost:8088/](http://localhost:8088/)  | Apache Superset |
 
 |   |  | |
 | ------------- | ------------- |  ------------- |
