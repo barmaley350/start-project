@@ -332,7 +332,7 @@ docker compose up
 ```
 ## Наполнить базу тестовыми данными
 ```
-./run.sh 1 testapp_fill_all_models
+./run.sh 1 testapp_fill_all_models --clear --count 1000
 ```
 # Настройка git pre-commit
 
