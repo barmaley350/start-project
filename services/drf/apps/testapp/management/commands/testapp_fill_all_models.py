@@ -100,8 +100,9 @@ class Command(BaseCommand):
         """Заполнение модели Project."""
         count = self.options.get("count")
         project_data = []
-        for idx in range(count):  # pyright: ignore[reportArgumentType]
-            self.output_process(f"\u2192 Создано {idx + 1} проектов из {count}")  # pyright: ignore[reportArgumentType]
+        for idx in range(count):  # type: ignore  # noqa: PGH003
+            out_text = f"\u2192 Создано {idx + 1} проектов из {count}"
+            self.output_process(out_text)
             project = ProjectFactory.build(
                 owner=random.choice(self.users)  # noqa: S311
             )
