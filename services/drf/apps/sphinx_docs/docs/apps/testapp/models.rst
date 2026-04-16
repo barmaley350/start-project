@@ -16,4 +16,7 @@ Models
    :undoc-members:
    :show-inheritance:
 
-
+.. automodule:: apps.testapp.models.tag
+   :members:
+   :undoc-members:
+   :show-inheritance:
